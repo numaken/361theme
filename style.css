@@ -1,0 +1,40 @@
+/*
+Theme Name: 361 UIkit Theme
+Theme URI: https://361project.com/
+Author: numaken
+Description: UIkit3ベースの軽量WordPressテーマ
+Version: 1.0
+*/
+
+
+/* カテゴリ色分け例 */
+.category-badge.cat-news {
+  background-color: #1e87f0;
+  color: #fff;
+}
+
+.category-badge.cat-events {
+  background-color: #32d296;
+  color: #fff;
+}
+
+.category-badge.cat-warning {
+  background-color: #f0506e;
+  color: #fff;
+}
+
+/* Hero Section カスタム */
+.uk-section-primary {
+  background: linear-gradient(to right, #0e1e25, #243b55);
+  color: #fff;
+}
+
+/* 投稿カード */
+.uk-card-title {
+  font-size: 1.1rem;
+}
+
+.uk-card-hover:hover {
+  transform: translateY(-5px);
+  transition: all 0.2s ease;
+}

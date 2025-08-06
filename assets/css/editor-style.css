@@ -1,0 +1,4 @@
+/* editor-style.css */
+body .wp-block-button .wp-block-button__link {
+  border-radius: .25rem;
+}
