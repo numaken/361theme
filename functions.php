@@ -901,6 +901,43 @@ add_shortcode('ad_inarticle', function(){
     return ob_get_clean();
 });
 
+// Inject in-article ads after specific paragraphs (e.g., 2 and 6)
+add_filter('the_content', function($content){
+    if ( is_admin() || is_feed() || is_search() ) return $content;
+    if ( ! is_singular('post') ) return $content;
+    if ( is_user_logged_in() && current_user_can('edit_posts') ) return $content;
+
+    $slot = get_theme_mod('plb_adsense_inarticle_slot', '6055296866');
+    $client = get_theme_mod('plb_adsense_client', 'ca-pub-8539502502589814');
+    if ( empty($slot) || empty($client) ) return $content;
+
+    // Split by closing paragraph tag, keep delimiter
+    $parts = preg_split('/(<\\/p>)/i', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+    if ( ! $parts || count($parts) < 2 ) return $content;
+
+    $targets = [2,6]; // after these paragraph indexes
+    $out = '';
+    $pIndex = 0;
+    for ( $i=0; $i<count($parts); $i++ ) {
+        $out .= $parts[$i];
+        if ( preg_match('/<\\/p>/i', $parts[$i]) ) {
+            $pIndex++;
+            if ( in_array($pIndex, $targets, true) ) {
+                // Render inline unit (responsive auto)
+                ob_start();
+                ?>
+                <div class="plb-ad" aria-label="advertisement">
+                  <ins class="adsbygoogle" style="display:block" data-ad-format="auto" data-full-width-responsive="true" data-ad-client="<?php echo esc_attr($client); ?>" data-ad-slot="<?php echo esc_attr($slot); ?>"></ins>
+                </div>
+                <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+                <?php
+                $out .= ob_get_clean();
+            }
+        }
+    }
+    return $out;
+}, 20);
+
 if ( ! function_exists('panolabo_haversine_km') ) {
   function panolabo_haversine_km( float $lat1, float $lng1, float $lat2, float $lng2 ) : float {
     $R = 6371.0;
