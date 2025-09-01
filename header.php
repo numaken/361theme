@@ -16,32 +16,71 @@
 <a href="#main-content" class="uk-skip-link uk-position-fixed uk-position-top-left uk-padding-small"><?php esc_html_e('コンテンツへスキップ','panolabo'); ?></a>
 
 <header class="site-header" id="site-header" role="banner">
-  <div class="container uk-container">
-    <div class="brand">
-      <a class="logo" href="<?php echo esc_url( home_url('/') ); ?>" aria-label="<?php bloginfo('name'); ?>">
-        <?php if ( function_exists('the_custom_logo') && has_custom_logo() ) { the_custom_logo(); } else { ?><span class="site-title"><?php bloginfo('name'); ?></span><?php } ?>
-      </a>
-    </div>
-    <nav class="primary-nav" aria-label="Primary">
-      <?php
-        wp_nav_menu([
-          'theme_location' => 'primary',
-          'container'      => false,
-          'menu_class'     => 'menu menu--primary',
-          'fallback_cb'    => function(){ echo '<ul class="menu"><li><a href="'.esc_url( admin_url('nav-menus.php') ).'">Set Primary Menu</a></li></ul>'; }
-        ]);
-      ?>
-    </nav>
-    <div class="header-actions">
-      <button class="btn-link" data-action="toggle-distance" aria-pressed="false" title="Sort by distance">⟂ Near</button>
-      <button class="btn-link" data-action="open-search" aria-expanded="false" aria-controls="header-search" title="Search">🔍</button>
-      <button class="hamburger" id="hamburger" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
+  <!-- Main Header Bar -->
+  <div class="header-main">
+    <div class="container uk-container">
+      <div class="header-content">
+        <div class="brand">
+          <a class="logo" href="<?php echo esc_url( home_url('/') ); ?>" aria-label="<?php bloginfo('name'); ?>">
+            <?php if ( function_exists('the_custom_logo') && has_custom_logo() ) { 
+              the_custom_logo(); 
+            } else { ?>
+              <span class="site-title"><?php bloginfo('name'); ?></span>
+            <?php } ?>
+          </a>
+        </div>
+        
+        <nav class="primary-nav" aria-label="Primary">
+          <?php
+            wp_nav_menu([
+              'theme_location' => 'primary',
+              'container'      => false,
+              'menu_class'     => 'menu menu--primary',
+              'fallback_cb'    => function(){ 
+                echo '<ul class="menu"><li><a href="'.esc_url( admin_url('nav-menus.php') ).'">Set Primary Menu</a></li></ul>'; 
+              }
+            ]);
+          ?>
+        </nav>
+        
+        <div class="header-actions">
+          <?php if ( is_front_page() ) : ?>
+            <button class="btn-link distance-toggle" data-action="toggle-distance" aria-pressed="false" title="近い順で表示">
+              <span class="icon">📍</span>
+              <span class="text">近い順</span>
+            </button>
+          <?php endif; ?>
+          <button class="btn-link search-toggle" data-action="open-search" aria-expanded="false" aria-controls="header-search" title="検索">
+            <span class="icon">🔍</span>
+          </button>
+          <button class="hamburger" id="hamburger" aria-expanded="false" aria-controls="mobile-drawer" aria-label="メニューを開く">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Breadcrumb Navigation (only on non-front pages) -->
+  <?php if ( ! is_front_page() ) : ?>
+    <div class="header-breadcrumb">
+      <div class="container uk-container">
+        <?php if ( function_exists('yoast_breadcrumb') ) {
+          yoast_breadcrumb( '<nav class="breadcrumb-nav" aria-label="Breadcrumb">','</nav>' );
+        } elseif ( function_exists('panolabo_breadcrumb') ) {
+          echo '<nav class="breadcrumb-nav" aria-label="Breadcrumb">';
+          panolabo_breadcrumb();
+          echo '</nav>';
+        } ?>
+      </div>
+    </div>
+  <?php endif; ?>
+
+  <!-- Search Bar -->
   <div class="header-search" id="header-search" hidden>
-    <?php get_search_form(); ?>
+    <div class="container uk-container">
+      <?php get_search_form(); ?>
+    </div>
   </div>
 </header>
 
@@ -62,5 +101,4 @@
   </div>
 </div>
 
-<main id="main-content" role="main" class="uk-section uk-section-default">
-  <?php if ( function_exists('panolabo_breadcrumb') ) panolabo_breadcrumb(); ?>
+<main id="main-content" role="main"><?php

@@ -8,10 +8,6 @@ get_header();
 <div class="single-post-section">
   <div class="uk-container">
 
-    <?php if ( function_exists('yoast_breadcrumb') ) {
-      yoast_breadcrumb( '<nav class="breadcrumb-nav">','</nav>' );
-    } ?>
-
     <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 
     <?php
