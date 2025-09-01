@@ -3,6 +3,8 @@
 <head>
   <meta charset="<?php bloginfo( 'charset' ); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-8539502502589814">
+
   <?php wp_head(); ?>
 
   <!-- Google AdSense -->
@@ -13,6 +15,7 @@
 
 </head>
 <body <?php body_class(); ?>>
+<?php if ( function_exists( 'wp_body_open' ) ) { wp_body_open(); } ?>
 <a href="#main-content" class="uk-skip-link uk-position-fixed uk-position-top-left uk-padding-small">
   <?php esc_html_e( 'コンテンツへスキップ', 'panolabo' ); ?>
 </a>
@@ -31,7 +34,7 @@
       </h1>
     <?php } ?>
 
-    <nav class="uk-navbar-container" uk-navbar>
+    <nav class="uk-navbar-container" uk-navbar aria-label="メインメニュー">
       <div class="uk-navbar-left">
         <?php
           wp_nav_menu([
@@ -45,5 +48,5 @@
   </div>
 </header>
 
-<main id="main-content" role="main" class="uk-section uk-section-default uk-padding">
+<main id="main-content" role="main" class="uk-section uk-section-default">
   <?php panolabo_breadcrumb(); ?>

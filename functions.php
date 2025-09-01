@@ -133,16 +133,9 @@ add_action( 'after_setup_theme', 'panolabo_theme_setup' );
 
 //―――― スタイル＆スクリプト読み込み ――――
 function panolabo_enqueue_assets() {
+    // 互換性のためWP同梱のjQueryを利用
     if ( ! is_admin() ) {
-        // jQuery（Google CDN 最新版）
-        wp_deregister_script( 'jquery' );
-        wp_enqueue_script(
-            'jquery',
-            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-            [],
-            '3.6.0',
-            true
-        );
+        wp_enqueue_script( 'jquery' );
     }
 
     // UIkit3（CSS + JS + Icons）
@@ -182,6 +175,19 @@ function panolabo_enqueue_assets() {
         [],
         null
     );
+
+    // テーマ共通JS（Load More等）
+    wp_enqueue_script(
+        'panolabo-theme',
+        get_template_directory_uri() . '/assets/js/theme.js',
+        [ 'jquery' ],
+        wp_get_theme()->get( 'Version' ),
+        true
+    );
+    wp_localize_script( 'panolabo-theme', 'panolaboAjax', [
+        'ajax_url' => admin_url( 'admin-ajax.php' ),
+        'nonce'    => wp_create_nonce( 'load_more_nonce' ),
+    ] );
 }
 add_action( 'wp_enqueue_scripts', 'panolabo_enqueue_assets' );
 
@@ -211,6 +217,15 @@ add_action( 'widgets_init', 'panolabo_widgets_init' );
 // ① OGP＆Twitterカード用メタタグ
 // ─────────────────────────────
 function panolabo_meta_tags() {
+    // If major SEO plugin is active, skip theme-level meta tags to avoid duplication
+    if (
+        defined('AIOSEO_VERSION') || class_exists('AIOSEO\\Plugin') ||
+        defined('WPSEO_VERSION')  || function_exists('wpseo_replace_vars') ||
+        defined('SEOPRESS_VERSION')
+    ) {
+        return;
+    }
+
     if ( is_singular() ) {
         global $post;
         $title = get_the_title($post);
@@ -318,7 +333,7 @@ add_action( 'init', 'panolabo_register_block_styles' );
 // ─────────────────────────────
 function panolabo_breadcrumb() {
     if ( ! is_front_page() ) {
-        echo '<nav class="uk-breadcrumb uk-margin-small-bottom"><ul>';
+        echo '<nav class="uk-breadcrumb uk-margin-small-bottom" aria-label="breadcrumb"><ul>';
         echo '<li><a href="' . esc_url( home_url() ) . '">' . __( 'ホーム', 'panolabo' ) . '</a></li>';
         if ( is_singular() ) {
             echo '<li>' . get_the_title() . '</li>';
@@ -759,3 +774,26 @@ function panolabo_batch_enhance_descriptions() {
     wp_die( '✅ 全記事の本文加筆が完了しました。', 'Batch Complete' );
 }
 add_action( 'admin_init', 'panolabo_batch_enhance_descriptions' );
+
+
+
+// Ajax ハンドラを登録
+add_action( 'wp_ajax_load_more_posts',        'load_more_posts' );
+add_action( 'wp_ajax_nopriv_load_more_posts', 'load_more_posts' );
+function load_more_posts() {
+  $page = intval( $_GET['page'] ) + 1;
+  $args = [
+    'post_type'      => 'post',
+    'posts_per_page' => 25,
+    'paged'          => $page,
+  ];
+  $query = new WP_Query( $args );
+  if ( $query->have_posts() ) {
+    while ( $query->have_posts() ) {
+      $query->the_post();
+      get_template_part( 'template-parts/content-card' );
+    }
+  }
+  wp_reset_postdata();
+  wp_die();
+}

@@ -16,7 +16,7 @@ get_header();
 
     <?php
       // DBの本文は使わない場合はコメントアウト
-      // $content_html = apply_filters( 'the_content', get_the_content() );
+      $content_html = apply_filters( 'the_content', get_the_content() );
 
       // カスタムフィールドから apicode を取得し、API URL を組み立て
       $code    = get_post_meta( get_the_ID(), 'apicode', true );
@@ -127,7 +127,7 @@ get_header();
 
           <!-- DBの本文（必要ならアンコメント） -->
           <div class="uk-margin">
-            <!-- <?php // echo $content_html; ?> -->
+            <?php  echo $content_html; ?>
           </div>
         </div>
       </div>
@@ -135,7 +135,7 @@ get_header();
       <!-- 説明文 -->
       <?php if ( $description ) : ?>
         <div class="uk-margin-medium-top">
-          <?php echo $description; ?>
+          <!--<?php echo $description; ?>-->
         </div>
       <?php endif; ?>
 
