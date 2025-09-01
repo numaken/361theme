@@ -36,6 +36,28 @@
     }
   }
   $card_en = plb_get_card_en_desc( get_the_ID() );
+
+  // Thumbnail resolve: featured image -> API thumb2x/thumb -> none
+  $thumb_url = '';
+  if ( has_post_thumbnail() ) {
+    $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+  }
+  if ( ! $thumb_url ) {
+    $apicode = get_post_meta( get_the_ID(), 'apicode', true );
+    if ( $apicode && function_exists('panolabo_fetch_api_data') ) {
+      $data = panolabo_fetch_api_data( $apicode );
+      if ( is_array($data) ) {
+        $raw = $data['thumb2x'] ?? ( $data['thumb'] ?? '' );
+        if ( $raw ) {
+          if ( function_exists('panolabo_normalize_thumbnail_url') ) {
+            $thumb_url = panolabo_normalize_thumbnail_url( $raw );
+          } else {
+            $thumb_url = esc_url( $raw );
+          }
+        }
+      }
+    }
+  }
 ?>
 <div class="post-card"<?php echo $lat_attr . $lng_attr; ?>>
   <a href="<?php the_permalink(); ?>"
@@ -47,13 +69,9 @@
         echo '<span class="category-badge uk-label uk-label-success uk-position-small uk-position-top-left">' . esc_html( $cat->name ) . '</span>';
       }
     ?>
-    <?php if ( has_post_thumbnail() ) : ?>
+    <?php if ( $thumb_url ) : ?>
       <div class="uk-card-media-top">
-        <?php the_post_thumbnail( 'medium', [
-          'loading' => 'lazy',
-          'decoding' => 'async',
-          'class'   => 'uk-width-1-1 uk-border-rounded',
-        ] ); ?>
+        <img src="<?php echo esc_url( $thumb_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy" decoding="async" class="uk-width-1-1 uk-border-rounded" />
       </div>
     <?php endif; ?>
     <div class="uk-card-body">
