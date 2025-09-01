@@ -33,6 +33,25 @@
     setTimeout(function(){ $('#post-list > .fade-in').removeClass('fade-in'); }, 300);
   }
 
+  // Insert responsive ads into grid (every 6 items)
+  function insertGridAds(){
+    var client = (window.plbAds && plbAds.client) || '';
+    var slot   = (window.plbAds && plbAds.gridSlot) || '';
+    if(!client || !slot || typeof adsbygoogle === 'undefined') return;
+    var $list = $('#post-list');
+    var $items = $list.children();
+    $items.each(function(i,el){
+      if((i+1)%6===0){
+        var $n = $(el).next();
+        if(!$n.hasClass('plb-ad')){
+          var html = '<div class="plb-ad plb-ad--grid"><ins class="adsbygoogle" style="display:block;text-align:center;" data-ad-client="'+client+'" data-ad-slot="'+slot+'" data-ad-format="auto" data-full-width-responsive="true"></ins></div>';
+          $(html).insertAfter($(el));
+          (adsbygoogle=window.adsbygoogle||[]).push({});
+        }
+      }
+    });
+  }
+
   // Distance calc in km
   function distKm(lat1, lng1, lat2, lng2){
     var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
@@ -87,7 +106,7 @@
       removeSkeletons();
       $('#post-list').append(html);
       $btn.data('page', page + 1);
-      fadeInNew();
+      fadeInNew(); insertGridAds();
       if(window.__plb_geo){ annotateAndSortByDistance(window.__plb_geo); }
       if(!canLoadMore($btn)) $btn.hide();
     }).always(function(){

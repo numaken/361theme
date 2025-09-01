@@ -7,8 +7,11 @@
 
   <?php wp_head(); ?>
 
-  <!-- Google AdSense (recommended format with client query param) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8539502502589814" crossorigin="anonymous"></script>
+  <!-- Google AdSense (client from Customizer if set) -->
+    <?php $plb_client = get_theme_mod('plb_adsense_client', 'ca-pub-8539502502589814');
+      if ( $plb_client ) : ?>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo esc_attr($plb_client); ?>" crossorigin="anonymous"></script>
+    <?php endif; ?>
 
 
 </head>

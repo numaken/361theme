@@ -188,6 +188,11 @@ function panolabo_enqueue_assets() {
         'ajax_url' => admin_url( 'admin-ajax.php' ),
         'nonce'    => wp_create_nonce( 'load_more_nonce' ),
     ] );
+    // AdSense publish/slot values for client-side grid insertion
+    wp_localize_script( 'panolabo-theme', 'plbAds', [
+        'client'   => get_theme_mod('plb_adsense_client', ''),
+        'gridSlot' => get_theme_mod('plb_adsense_grid_slot', ''),
+    ] );
 }
 add_action( 'wp_enqueue_scripts', 'panolabo_enqueue_assets' );
 
@@ -844,6 +849,57 @@ if ( ! function_exists('panolabo_get_geo_for_post') ) {
     return $geo;
   }
 }
+
+// ========================
+// Customizer (AdSense settings)
+// ========================
+add_action('customize_register', function($wp_customize){
+    $wp_customize->add_section('plb_adsense', [
+        'title' => 'AdSense 設定', 'priority' => 160
+    ]);
+    $wp_customize->add_setting('plb_adsense_client', [
+        'type'=>'theme_mod', 'sanitize_callback'=>'sanitize_text_field'
+    ]);
+    $wp_customize->add_control('plb_adsense_client', [
+        'section'=>'plb_adsense', 'label'=>'Client ID (ca-pub-....)'
+    ]);
+    $wp_customize->add_setting('plb_adsense_grid_slot', [
+        'type'=>'theme_mod', 'sanitize_callback'=>'sanitize_text_field'
+    ]);
+    $wp_customize->add_control('plb_adsense_grid_slot', [
+        'section'=>'plb_adsense', 'label'=>'Grid Slot ID'
+    ]);
+    $wp_customize->add_setting('plb_adsense_inarticle_slot', [
+        'type'=>'theme_mod', 'sanitize_callback'=>'sanitize_text_field'
+    ]);
+    $wp_customize->add_control('plb_adsense_inarticle_slot', [
+        'section'=>'plb_adsense', 'label'=>'In-article Slot ID'
+    ]);
+});
+
+// Helper: render AdSense unit (can be used by shortcodes/templates)
+function plb_adsense_unit($slot, $class=''){
+    if ( empty($slot) ) return;
+    if ( is_user_logged_in() && current_user_can('edit_posts') ) return;
+    $client = get_theme_mod('plb_adsense_client', '');
+    if ( empty($client) ) return;
+    $cls = $class ? ' '.esc_attr($class) : '';
+    ?>
+    <div class="plb-ad<?=$cls?>" aria-label="ad">
+      <ins class="adsbygoogle" style="display:block;text-align:center;"
+           data-ad-client="<?=esc_attr($client)?>"
+           data-ad-slot="<?=esc_attr($slot)?>"
+           data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    <?php
+}
+
+add_shortcode('ad_inarticle', function(){
+    ob_start();
+    plb_adsense_unit( get_theme_mod('plb_adsense_inarticle_slot', '') );
+    return ob_get_clean();
+});
 
 if ( ! function_exists('panolabo_haversine_km') ) {
   function panolabo_haversine_km( float $lat1, float $lng1, float $lat2, float $lng2 ) : float {
