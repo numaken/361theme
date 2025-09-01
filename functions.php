@@ -127,6 +127,7 @@ function panolabo_theme_setup() {
     add_theme_support( 'menus' );
     register_nav_menus( [
         'primary' => __( 'メインメニュー', 'panolabo' ),
+        'footer'  => __( 'フッターメニュー', 'panolabo' ),
     ] );
 }
 add_action( 'after_setup_theme', 'panolabo_theme_setup' );
@@ -197,6 +198,26 @@ function panolabo_enqueue_assets() {
         'stickyEnable'=> (bool) get_theme_mod('plb_adsense_sticky_enable', false),
         'show'        => ! ( is_user_logged_in() && current_user_can('edit_posts') ),
     ] );
+
+    // Header/Footer scoped styles (optional external file)
+    if ( file_exists( get_stylesheet_directory() . '/assets/css/header-footer.css' ) ) {
+        wp_enqueue_style(
+            '361-header-footer',
+            get_stylesheet_directory_uri() . '/assets/css/header-footer.css',
+            array('uikit','panolabo-style'),
+            wp_get_theme()->get( 'Version' )
+        );
+    }
+    // Header/Footer interactions
+    if ( file_exists( get_stylesheet_directory() . '/assets/js/theme-header-footer.js' ) ) {
+        wp_enqueue_script(
+            '361-header-footer',
+            get_stylesheet_directory_uri() . '/assets/js/theme-header-footer.js',
+            array('jquery'),
+            wp_get_theme()->get( 'Version' ),
+            true
+        );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'panolabo_enqueue_assets' );
 
