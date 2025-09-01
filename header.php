@@ -7,10 +7,8 @@
 
   <?php wp_head(); ?>
 
-  <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-          data-ad-client="ca-pub-8539502502589814"
-          crossorigin="anonymous"></script>
+  <!-- Google AdSense (recommended format with client query param) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8539502502589814" crossorigin="anonymous"></script>
 
 
 </head>
