@@ -78,7 +78,7 @@
     addSkeletons(6);
     var page = parseInt($btn.data('page'))||0;
     var payload = { action: 'load_more_posts', page: page, nonce: (window.panolaboAjax && panolaboAjax.nonce) || '' };
-    if(window.__plb_geo){ payload.lat = window.__plb_geo.coords.latitude; payload.lng = window.__plb_geo.coords.longitude; }
+    if((localStorage.getItem('plb_sort')||'new')==='near' && window.__plb_geo){ payload.lat = window.__plb_geo.coords.latitude; payload.lng = window.__plb_geo.coords.longitude; }
     $.ajax({
       url: (window.panolaboAjax && panolaboAjax.ajax_url) || '/wp-admin/admin-ajax.php',
       method: 'POST',
@@ -120,12 +120,36 @@
 
   $(function(){
     var $btn = $('#load-more');
-    // Get geolocation (optional); then resort existing list
+    var $toggle = $('.plb-sort-toggle');
+    var mode = localStorage.getItem('plb_sort') || 'new';
+
+    function updateToggle(){
+      $toggle.find('button').removeClass('uk-button-primary');
+      $toggle.find('button[data-sort="'+mode+'"]').addClass('uk-button-primary');
+      if(mode==='new'){
+        $('.distance-meta').text('');
+      } else if(window.__plb_geo){
+        annotateAndSortByDistance(window.__plb_geo);
+      }
+    }
+
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(p){
-        window.__plb_geo = p; annotateAndSortByDistance(p);
+        window.__plb_geo = p; if(mode==='near'){ annotateAndSortByDistance(p); }
       });
     }
+
+    $toggle.on('click','button',function(){
+      var sel = $(this).data('sort');
+      if(sel===mode) return;
+      mode = sel; localStorage.setItem('plb_sort', mode);
+      if(mode==='near' && !window.__plb_geo && navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(p){
+          window.__plb_geo = p; updateToggle();
+        }, function(){ mode='new'; localStorage.setItem('plb_sort','new'); updateToggle(); });
+      }
+      updateToggle();
+    });
 
     // Button click
     $btn.on('click', function(e){ e.preventDefault(); doLoad($btn); });
@@ -133,6 +157,7 @@
     setupInfinite($btn);
     // Initial fade for first paint
     fadeInNew();
+    updateToggle();
     // Header shadow
     headerShadow();
   });

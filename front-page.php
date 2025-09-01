@@ -17,6 +17,14 @@ $query = new WP_Query( $args );
 <div class="uk-section uk-section-default">
   <div class="uk-container">
 
+    <div class="uk-flex uk-flex-between uk-margin-small-bottom" aria-label="並び順">
+      <div></div>
+      <div class="plb-sort-toggle uk-button-group" role="group">
+        <button type="button" class="uk-button uk-button-default" data-sort="new">新着順</button>
+        <button type="button" class="uk-button uk-button-default" data-sort="near">近い順</button>
+      </div>
+    </div>
+
     <?php if ( $query->have_posts() ) : ?>
       <div id="post-list" class="uk-grid-match uk-child-width-1-3@m uk-grid-small" uk-grid>
         <?php
