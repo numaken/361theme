@@ -29,6 +29,22 @@ jobs:
           rsync -a --delete --exclude='.git' --exclude='dist' ./ ./dist/361theme/
           ls -lah dist/361theme | head -n 50
 
+      - name: FTP debug (print PWD and list candidates)
+        run: |
+          set +e
+          echo "== PWD at login root =="
+          curl -v --ftp-ssl --ssl-reqd -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" "ftp://${{ secrets.FTP_SERVER }}/" -Q "PWD" || true
+          echo "\n== List root =="
+          curl -sS --ftp-ssl --ssl-reqd -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" "ftp://${{ secrets.FTP_SERVER }}/" -l || true
+          echo "\n== List /public_html =="
+          curl -sS --ftp-ssl --ssl-reqd -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" "ftp://${{ secrets.FTP_SERVER }}/public_html/" -l || true
+          echo "\n== List /public_html/kyoto =="
+          curl -sS --ftp-ssl --ssl-reqd -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" "ftp://${{ secrets.FTP_SERVER }}/public_html/kyoto/" -l || true
+          echo "\n== List /wp-content/themes =="
+          curl -sS --ftp-ssl --ssl-reqd -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" "ftp://${{ secrets.FTP_SERVER }}/wp-content/themes/" -l || true
+          echo "\n== Current server-dir from secret =="
+          echo "${{ secrets.FTP_REMOTE_DIR }}"
+
       - name: Deploy via rsync over SSH
         if: ${{ secrets.DEPLOY_HOST && secrets.DEPLOY_USER && secrets.DEPLOY_SSH_KEY && secrets.DEPLOY_PATH }}
         uses: burnett01/rsync-deployments@v7.0.1
