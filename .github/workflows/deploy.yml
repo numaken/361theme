@@ -46,8 +46,13 @@ jobs:
           echo "${{ secrets.FTP_REMOTE_DIR }}"
 
       - name: Deploy via rsync over SSH
-        if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_USER != '' && secrets.DEPLOY_SSH_KEY != '' && secrets.DEPLOY_PATH != '' }}
         uses: burnett01/rsync-deployments@v7.0.1
+        if: ${{ env.DEPLOY_HOST != '' }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         with:
           switches: -avz --delete
           path: dist/361theme/
@@ -57,8 +62,13 @@ jobs:
           remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Deploy via FTPS
-        if: ${{ secrets.FTP_SERVER != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' && secrets.FTP_REMOTE_DIR != '' }}
         uses: SamKirkland/FTP-Deploy-Action@v4
+        if: ${{ env.FTP_SERVER != '' }}
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
