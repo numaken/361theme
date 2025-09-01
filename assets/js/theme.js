@@ -33,6 +33,36 @@
     setTimeout(function(){ $('#post-list > .fade-in').removeClass('fade-in'); }, 300);
   }
 
+  // Distance calc in km
+  function distKm(lat1, lng1, lat2, lng2){
+    var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+    var a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function annotateAndSortByDistance(pos){
+    if(!pos) return;
+    var lat = pos.coords.latitude, lng = pos.coords.longitude;
+    // annotate
+    $('#post-list .post-card').each(function(){
+      var $c=$(this), la=parseFloat($c.data('lat')), ln=parseFloat($c.data('lng'));
+      if(!isNaN(la) && !isNaN(ln)){
+        var d = distKm(lat,lng,la,ln);
+        $c.attr('data-distance', d.toFixed(3));
+        $c.find('.distance-meta').text(d.toFixed(1)+' km');
+      }
+    });
+    // sort
+    var $list = $('#post-list');
+    var items = $list.children().get();
+    items.sort(function(a,b){
+      var da=parseFloat($(a).find('.post-card').attr('data-distance'))||Number.MAX_VALUE;
+      var db=parseFloat($(b).find('.post-card').attr('data-distance'))||Number.MAX_VALUE;
+      return da - db;
+    });
+    $.each(items, function(_,el){ $list.append(el); });
+  }
+
   function canLoadMore($btn){
     var page = parseInt($btn.data('page'))||0;
     var max  = parseInt($btn.data('max'))||0;
@@ -47,15 +77,18 @@
     showSpinner($btn, true);
     addSkeletons(6);
     var page = parseInt($btn.data('page'))||0;
+    var payload = { action: 'load_more_posts', page: page, nonce: (window.panolaboAjax && panolaboAjax.nonce) || '' };
+    if(window.__plb_geo){ payload.lat = window.__plb_geo.coords.latitude; payload.lng = window.__plb_geo.coords.longitude; }
     $.ajax({
       url: (window.panolaboAjax && panolaboAjax.ajax_url) || '/wp-admin/admin-ajax.php',
       method: 'POST',
-      data: { action: 'load_more_posts', page: page, nonce: (window.panolaboAjax && panolaboAjax.nonce) || '' }
+      data: payload
     }).done(function(html){
       removeSkeletons();
       $('#post-list').append(html);
       $btn.data('page', page + 1);
       fadeInNew();
+      if(window.__plb_geo){ annotateAndSortByDistance(window.__plb_geo); }
       if(!canLoadMore($btn)) $btn.hide();
     }).always(function(){
       showSpinner($btn, false);
@@ -87,6 +120,13 @@
 
   $(function(){
     var $btn = $('#load-more');
+    // Get geolocation (optional); then resort existing list
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(p){
+        window.__plb_geo = p; annotateAndSortByDistance(p);
+      });
+    }
+
     // Button click
     $btn.on('click', function(e){ e.preventDefault(); doLoad($btn); });
     // Infinite scroll

@@ -781,7 +781,16 @@ add_action( 'admin_init', 'panolabo_batch_enhance_descriptions' );
 add_action( 'wp_ajax_load_more_posts',        'load_more_posts' );
 add_action( 'wp_ajax_nopriv_load_more_posts', 'load_more_posts' );
 function load_more_posts() {
-  $page = intval( $_GET['page'] ) + 1;
+  // CSRF check (backward compatible: if nonce missing, allow for now)
+  if ( isset($_REQUEST['nonce']) ) {
+    check_ajax_referer( 'load_more_nonce', 'nonce' );
+  }
+  $page = isset($_REQUEST['page']) ? intval( $_REQUEST['page'] ) + 1 : 1;
+  if ($page < 1) $page = 1;
+  $lat  = isset($_REQUEST['lat']) ? floatval($_REQUEST['lat']) : null;
+  $lng  = isset($_REQUEST['lng']) ? floatval($_REQUEST['lng']) : null;
+  $geo  = ($lat !== null && $lng !== null && is_finite($lat) && is_finite($lng));
+
   $args = [
     'post_type'      => 'post',
     'posts_per_page' => 25,
@@ -789,11 +798,60 @@ function load_more_posts() {
   ];
   $query = new WP_Query( $args );
   if ( $query->have_posts() ) {
-    while ( $query->have_posts() ) {
-      $query->the_post();
+    $posts = $query->posts;
+    if ( $geo ) {
+      foreach ( $posts as &$p ) {
+        $g = panolabo_get_geo_for_post( $p->ID );
+        $p->plb_geo = $g;
+        if ( $g && isset($g['lat'], $g['lng']) ) {
+          $p->plb_dist = panolabo_haversine_km( $lat, $lng, floatval($g['lat']), floatval($g['lng']) );
+        } else {
+          $p->plb_dist = PHP_FLOAT_MAX;
+        }
+      }
+      unset($p);
+      usort( $posts, function($a,$b){ return $a->plb_dist <=> $b->plb_dist; } );
+    }
+    foreach ( $posts as $p ) {
+      setup_postdata( $p );
+      if ( isset($p->plb_geo) ) {
+        $GLOBALS['plb_geo_current'] = $p->plb_geo;
+        $GLOBALS['plb_dist_current'] = $p->plb_dist ?? null;
+      } else {
+        unset($GLOBALS['plb_geo_current'], $GLOBALS['plb_dist_current']);
+      }
       get_template_part( 'template-parts/content-card' );
     }
   }
   wp_reset_postdata();
   wp_die();
+}
+
+// Geo helpers
+if ( ! function_exists('panolabo_get_geo_for_post') ) {
+  function panolabo_get_geo_for_post( int $post_id ) : array {
+    $apicode = get_post_meta( $post_id, 'apicode', true );
+    if ( ! $apicode ) return [];
+    $tkey = 'plb_geo_' . md5( $apicode );
+    $cached = get_transient( $tkey );
+    if ( is_array($cached) ) return $cached;
+    $data = panolabo_fetch_api_data( $apicode );
+    $geo  = [];
+    if ( is_array($data) && isset($data['lat']) && isset($data['lng']) ) {
+      $geo = [ 'lat' => floatval($data['lat']), 'lng' => floatval($data['lng']) ];
+    }
+    set_transient( $tkey, $geo, 12 * HOUR_IN_SECONDS );
+    return $geo;
+  }
+}
+
+if ( ! function_exists('panolabo_haversine_km') ) {
+  function panolabo_haversine_km( float $lat1, float $lng1, float $lat2, float $lng2 ) : float {
+    $R = 6371.0;
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLng = deg2rad($lng2 - $lng1);
+    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng/2) * sin($dLng/2);
+    $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+    return $R * $c;
+  }
 }
