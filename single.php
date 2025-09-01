@@ -78,142 +78,156 @@ get_header();
         </div>
       </header>
 
-      <!-- Main Content Layout -->
-      <div class="post-content-grid">
-        
-        <!-- Primary Media Section -->
-        <div class="post-media-primary <?php echo $has_vr ? 'has-vr-content' : 'has-image-content'; ?>">
-          <?php if ( $has_vr ) : ?>
-            <div class="vr-viewer-container">
-              <div class="vr-viewer-wrapper">
-                <iframe
-                  src="<?php echo esc_url( $vr_url ); ?>"
-                  class="vr-iframe"
-                  allowfullscreen
-                  loading="lazy"
-                  title="<?php echo esc_attr($title); ?> VR Experience">
-                </iframe>
-                <div class="vr-overlay">
-                  <div class="vr-overlay-content">
-                    <span class="vr-icon">🥽</span>
-                    <span class="vr-text">VR体験中</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="vr-controls">
-                <a class="vr-fullscreen-btn" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">
-                  <span class="btn-icon">⛶</span>
-                  <span class="btn-text">全画面でVR体験</span>
-                </a>
-                <div class="vr-instructions">
-                  <span class="instruction-text">マウス・タッチで360度回転</span>
+      <!-- VR/Image Section (Full Width) -->
+      <div class="post-media-full <?php echo $has_vr ? 'has-vr-content' : 'has-image-content'; ?>">
+        <?php if ( $has_vr ) : ?>
+          <div class="vr-viewer-container">
+            <div class="vr-viewer-wrapper">
+              <iframe
+                src="<?php echo esc_url( $vr_url ); ?>"
+                class="vr-iframe"
+                allowfullscreen
+                loading="lazy"
+                title="<?php echo esc_attr($title); ?> VR Experience">
+              </iframe>
+              <div class="vr-overlay">
+                <div class="vr-overlay-content">
+                  <span class="vr-icon">🥽</span>
+                  <span class="vr-text">VR体験中</span>
                 </div>
               </div>
             </div>
             
-          <?php elseif ( $thumb ) : ?>
-            <div class="post-image-container">
-              <div class="post-image-wrapper">
-                <img src="<?php echo esc_url( $thumb ); ?>"
-                     alt="<?php echo esc_attr( $title ); ?>"
-                     loading="lazy"
-                     class="post-image"
-                     onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
-                <div class="image-overlay">
-                  <div class="image-overlay-content">
-                    <span class="image-icon">🏛️</span>
-                    <span class="image-text">写真で見る</span>
-                  </div>
+            <div class="vr-controls uk-flex uk-flex-center uk-flex-column uk-text-center">
+              <a class="vr-fullscreen-btn uk-button uk-button-primary" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">
+                <span class="btn-icon">⛶</span>
+                <span class="btn-text">全画面でVR体験</span>
+              </a>
+              <div class="vr-instructions uk-text-small uk-margin-small-top">
+                <span class="instruction-text">マウス・タッチで360度回転</span>
+              </div>
+            </div>
+          </div>
+          
+        <?php elseif ( $thumb ) : ?>
+          <div class="post-image-container">
+            <div class="post-image-wrapper">
+              <img src="<?php echo esc_url( $thumb ); ?>"
+                   alt="<?php echo esc_attr( $title ); ?>"
+                   loading="lazy"
+                   class="post-image"
+                   onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
+              <div class="image-overlay">
+                <div class="image-overlay-content">
+                  <span class="image-icon">🏛️</span>
+                  <span class="image-text">写真で見る</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <!-- Content Grid Layout -->
+      <div class="post-content-horizontal uk-grid-match" uk-grid>
+        
+        <!-- Left Column: Content & Categories -->
+        <div class="uk-width-1-2@m">
+          <div class="post-info-panel">
+            <div class="panel-content">
+              
+              <!-- Categories & Tags -->
+              <div class="post-taxonomy uk-margin-bottom">
+                <!-- カテゴリ -->
+                <div class="category-list uk-margin-small-bottom">
+                  <?php
+                    $cats = get_the_category();
+                    foreach ( $cats as $cat ) {
+                      printf(
+                        '<span class="category-tag"><a href="%1$s">%2$s</a></span> ',
+                        esc_url( get_category_link( $cat ) ),
+                        esc_html( $cat->name )
+                      );
+                    }
+                  ?>
+                </div>
+
+                <!-- タグ -->
+                <div class="tag-list">
+                  <?php
+                    $tags = get_the_tags();
+                    if ( $tags ) {
+                      foreach ( $tags as $tag ) {
+                        printf(
+                          '<a href="%1$s" class="tag-link">#%2$s</a>',
+                          esc_url( get_tag_link( $tag ) ),
+                          esc_html( $tag->name )
+                        );
+                      }
+                    }
+                  ?>
+                </div>
+              </div>
+
+              <!-- DBの本文（必要ならアンコメント） -->
+              <div class="uk-margin">
+                <?php echo $content_html; ?>
+              </div>
+
+              <!-- 基本情報 -->
+              <ul class="uk-list uk-list-divider uk-margin-top">
+                <?php if ( $main_cat || $sub_cat ) : ?>
+                  <li>
+                    <strong>カテゴリ:</strong>
+                    <?php
+                      echo esc_html( $main_cat );
+                      if ( $sub_cat ) {
+                        echo ' &raquo; ' . esc_html( $sub_cat );
+                      }
+                    ?>
+                  </li>
+                <?php endif; ?>
+                <?php if ( $address ) : ?>
+                  <li><strong>住所:</strong> <?php echo esc_html( $address ); ?></li>
+                <?php endif; ?>
+                <?php if ( $tel ) : ?>
+                  <li><strong>電話:</strong> <?php echo esc_html( $tel ); ?></li>
+                <?php endif; ?>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Map -->
+        <div class="uk-width-1-2@m">
+          <?php if ( $lat && $lng ) : ?>
+            <div class="map-container">
+              <iframe
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO0W5k7wqp9-Y4&q=<?php echo esc_attr( $lat ); ?>,<?php echo esc_attr( $lng ); ?>&zoom=16&maptype=roadmap&language=ja"
+                width="100%" height="400" style="border:0;" allowfullscreen loading="lazy">
+              </iframe>
+              <div class="map-actions uk-margin-small-top uk-flex uk-flex-center uk-child-width-auto" uk-grid>
+                <div>
+                  <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo esc_attr( $lat ); ?>,<?php echo esc_attr( $lng ); ?>" 
+                     target="_blank" 
+                     class="uk-button uk-button-primary uk-button-small">
+                    <span uk-icon="location"></span> 経路案内
+                  </a>
+                </div>
+                <div>
+                  <a href="https://www.google.com/maps/place/<?php echo esc_attr( $lat ); ?>,<?php echo esc_attr( $lng ); ?>/@<?php echo esc_attr( $lat ); ?>,<?php echo esc_attr( $lng ); ?>,16z" 
+                     target="_blank" 
+                     class="uk-button uk-button-default uk-button-small">
+                    <span uk-icon="world"></span> 詳細表示
+                  </a>
                 </div>
               </div>
             </div>
           <?php endif; ?>
         </div>
-
-        <!-- Content Information Panel -->
-        <div class="post-info-panel">
-          <div class="panel-content">
-            
-            <!-- Categories & Tags -->
-            <div class="post-taxonomy">
-              <!-- カテゴリ -->
-              <div class="category-list">
-                <?php
-                  $cats = get_the_category();
-                  foreach ( $cats as $cat ) {
-                    printf(
-                      '<span class="category-tag"><a href="%1$s">%2$s</a></span> ',
-                      esc_url( get_category_link( $cat ) ),
-                      esc_html( $cat->name )
-                    );
-                  }
-                ?>
-              </div>
-
-              <!-- タグ -->
-              <div class="tag-list">
-                <?php
-                  $tags = get_the_tags();
-                  if ( $tags ) {
-                    foreach ( $tags as $tag ) {
-                      printf(
-                        '<a href="%1$s" class="tag-link">#%2$s</a>',
-                        esc_url( get_tag_link( $tag ) ),
-                        esc_html( $tag->name )
-                      );
-                    }
-                  }
-                ?>
-              </div>
-            </div>
-
-          <!-- DBの本文（必要ならアンコメント） -->
-          <div class="uk-margin">
-            <?php  echo $content_html; ?>
-          </div>
-        </div>
+        
       </div>
 
-      <!-- 説明文 -->
-      <?php if ( $description ) : ?>
-        <div class="uk-margin-medium-top">
-          <!--<?php echo $description; ?>-->
-        </div>
-      <?php endif; ?>
-
-      <!-- 基本情報 -->
-      <ul class="uk-list uk-list-divider uk-margin-top">
-        <?php if ( $main_cat || $sub_cat ) : ?>
-          <li>
-            <strong>カテゴリ:</strong>
-            <?php
-              echo esc_html( $main_cat );
-              if ( $sub_cat ) {
-                echo ' &raquo; ' . esc_html( $sub_cat );
-              }
-            ?>
-          </li>
-        <?php endif; ?>
-        <?php if ( $address ) : ?>
-          <li><strong>住所:</strong> <?php echo esc_html( $address ); ?></li>
-        <?php endif; ?>
-        <?php if ( $tel ) : ?>
-          <li><strong>電話:</strong> <?php echo esc_html( $tel ); ?></li>
-        <?php endif; ?>
-      </ul>
-
-      <?php /* 下部のVRビューアは上部に統合したため削除 */ ?>
-
-      <!-- Google Map -->
-      <?php if ( $lat && $lng ) : ?>
-        <div class="uk-margin-large-top">
-          <iframe
-            src="https://www.google.com/maps?q=<?php echo esc_attr( $lat ); ?>,<?php echo esc_attr( $lng ); ?>&hl=ja&z=15&output=embed"
-            width="100%" height="400" style="border:0;" allowfullscreen loading="lazy">
-          </iframe>
-        </div>
-      <?php endif; ?>
 
     </article>
 

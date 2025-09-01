@@ -37,7 +37,9 @@
               'container'      => false,
               'menu_class'     => 'menu menu--primary',
               'fallback_cb'    => function(){ 
-                echo '<ul class="menu"><li><a href="'.esc_url( admin_url('nav-menus.php') ).'">Set Primary Menu</a></li></ul>'; 
+                if ( current_user_can('manage_options') ) {
+                  echo '<ul class="menu"><li><a href="'.esc_url( admin_url('nav-menus.php') ).'">Set Primary Menu</a></li></ul>';
+                }
               }
             ]);
           ?>
@@ -78,11 +80,53 @@
         'theme_location' => 'primary',
         'container'      => 'nav',
         'container_class'=> 'drawer-nav',
-        'menu_class'     => 'menu menu--drawer'
+        'menu_class'     => 'menu menu--drawer',
+        'fallback_cb'    => function(){
+          if ( current_user_can('manage_options') ) {
+            echo '<nav class="drawer-nav"><ul class="menu menu--drawer"><li><a href="'.esc_url( admin_url('nav-menus.php') ).'">Set Primary Menu</a></li></ul></nav>';
+          }
+        }
       ]);
     ?>
     <div class="drawer-search">
       <?php get_search_form(); ?>
+    </div>
+    
+    <!-- Categories & Tags -->
+    <div class="drawer-taxonomy">
+      <div class="taxonomy-section">
+        <h4 class="taxonomy-title">カテゴリー</h4>
+        <div class="taxonomy-cloud">
+          <?php
+            $categories = get_categories(['hide_empty' => true]);
+            foreach ($categories as $category) {
+              printf(
+                '<a href="%s" class="taxonomy-tag category-tag">%s <span class="count">(%d)</span></a>',
+                esc_url(get_category_link($category)),
+                esc_html($category->name),
+                $category->count
+              );
+            }
+          ?>
+        </div>
+      </div>
+      
+      <div class="taxonomy-section">
+        <h4 class="taxonomy-title">タグ</h4>
+        <div class="taxonomy-cloud">
+          <?php
+            $tags = get_tags(['hide_empty' => true, 'number' => 20]);
+            foreach ($tags as $tag) {
+              printf(
+                '<a href="%s" class="taxonomy-tag tag-tag">#%s <span class="count">(%d)</span></a>',
+                esc_url(get_tag_link($tag)),
+                esc_html($tag->name),
+                $tag->count
+              );
+            }
+          ?>
+        </div>
+      </div>
     </div>
   </div>
 </div>
