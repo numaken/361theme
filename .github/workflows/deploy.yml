@@ -46,7 +46,7 @@ jobs:
           echo "${{ secrets.FTP_REMOTE_DIR }}"
 
       - name: Deploy via rsync over SSH
-        uses: burnett01/rsync-deployments@v7.0.1
+        uses: burnett01/rsync-deployments@6.0.0
         if: ${{ env.DEPLOY_HOST != '' }}
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
@@ -62,7 +62,7 @@ jobs:
           remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Deploy via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@4.3.4
         if: ${{ env.FTP_SERVER != '' }}
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
