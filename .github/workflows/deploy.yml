@@ -28,6 +28,7 @@ jobs:
           ls -lah dist/361theme | head -n 50
 
       - name: Deploy via rsync over SSH
+        if: ${{ secrets.DEPLOY_HOST && secrets.DEPLOY_USER && secrets.DEPLOY_SSH_KEY && secrets.DEPLOY_PATH }}
         uses: burnett01/rsync-deployments@v7.0.1
         with:
           switches: -avz --delete
@@ -36,6 +37,18 @@ jobs:
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Deploy via FTPS
+        if: ${{ secrets.FTP_SERVER && secrets.FTP_USERNAME && secrets.FTP_PASSWORD && secrets.FTP_REMOTE_DIR }}
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: ${{ secrets.FTP_PORT || 21 }}
+          local-dir: dist/361theme/
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
 
       - name: Purge opcode cache (optional)
         if: ${{ env.PURGE_CMD != '' }}
