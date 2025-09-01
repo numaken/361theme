@@ -169,6 +169,32 @@ function panolabo_enqueue_assets() {
         wp_get_theme()->get( 'Version' )
     );
 
+    // Enhanced Visual Kyoto Styles
+    wp_enqueue_style(
+        'visual-kyoto-styles',
+        get_template_directory_uri() . '/assets/css/visual-kyoto.css',
+        ['panolabo-style'],
+        wp_get_theme()->get( 'Version' )
+    );
+
+    // Card Components
+    wp_enqueue_style(
+        'card-components-styles',
+        get_template_directory_uri() . '/assets/css/card-components.css',
+        ['visual-kyoto-styles'],
+        wp_get_theme()->get( 'Version' )
+    );
+
+    // Single Post Styles
+    if ( is_single() ) {
+        wp_enqueue_style(
+            'single-post-styles',
+            get_template_directory_uri() . '/assets/css/single-post.css',
+            ['visual-kyoto-styles'],
+            wp_get_theme()->get( 'Version' )
+        );
+    }
+
     // MailFormPro スタイル（HTTPS化）
     wp_enqueue_style(
         'mailform-style',

@@ -1,0 +1,351 @@
+/*
+ * Enhanced Card Components for VR Kyoto Experience
+ * カードコンポーネントの詳細スタイリング
+ */
+
+/* Card Visual Content */
+.card-visual {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--mono-gray);
+}
+
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+  filter: grayscale(20%) contrast(1.05);
+}
+
+.post-card:hover .card-image {
+  transform: scale(1.08);
+  filter: grayscale(0%) contrast(1.15) brightness(1.05);
+}
+
+.post-card.has-vr .card-image {
+  filter: grayscale(10%) contrast(1.1) saturate(1.1);
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg, 
+    transparent 0%, 
+    rgba(0,0,0,0.1) 60%, 
+    rgba(0,0,0,0.3) 100%
+  );
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.post-card:hover .image-overlay {
+  opacity: 1;
+}
+
+/* Card Placeholder */
+.card-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(135deg, var(--mono-gray), #f0f0f0);
+  color: var(--mono-light);
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* Category Badge */
+.category-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--mono-black);
+  color: var(--mono-white);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-small);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Card Content */
+.card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-header {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 0.8rem;
+  color: var(--mono-dark);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card.has-vr .card-title {
+  color: #1a5e1a;
+}
+
+.card-description {
+  color: var(--mono-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card.has-vr .card-description {
+  color: #2d6b2d;
+}
+
+/* Card Meta Information */
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mono-gray);
+  margin-top: auto;
+}
+
+.meta-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.meta-date,
+.meta-distance {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--mono-lighter);
+}
+
+.meta-icon {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.distance-value {
+  font-weight: 600;
+  color: var(--accent-location);
+}
+
+/* VR Badge */
+.vr-badge {
+  background: linear-gradient(135deg, rgba(0,255,0,0.1), rgba(0,204,0,0.2));
+  color: #00aa00;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-small);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(0,255,0,0.3);
+}
+
+.vr-badge-text {
+  display: inline-block;
+}
+
+/* Card Hover Overlay */
+.card-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0,0,0,0.8) 0%,
+    rgba(0,0,0,0.6) 50%,
+    rgba(0,0,0,0.9) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 2;
+  backdrop-filter: blur(2px);
+}
+
+.post-card:hover .card-hover-overlay {
+  opacity: 1;
+}
+
+.post-card.has-vr:hover .card-hover-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(0,100,0,0.8) 0%,
+    rgba(0,150,0,0.6) 50%,
+    rgba(0,80,0,0.9) 100%
+  );
+}
+
+.hover-content {
+  text-align: center;
+  color: var(--mono-white);
+  padding: 1rem;
+}
+
+.hover-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  animation: pulse 1.5s infinite;
+}
+
+.hover-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Sort Toggle Enhanced */
+.plb-sort-toggle {
+  display: flex;
+  background: var(--mono-white);
+  border-radius: var(--radius-medium);
+  box-shadow: 0 2px 20px var(--shadow-subtle);
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.plb-sort-toggle:hover {
+  border-color: var(--mono-gray);
+  box-shadow: 0 4px 30px var(--shadow-medium);
+}
+
+.sort-btn {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--mono-light);
+  font-weight: 600;
+  transition: var(--transition);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.sort-btn.active,
+.sort-btn.uk-button-primary {
+  background: var(--mono-dark);
+  color: var(--mono-white);
+}
+
+.sort-btn:hover:not(.active) {
+  background: var(--mono-medium);
+  color: var(--mono-white);
+}
+
+.sort-icon {
+  font-size: 1.1em;
+}
+
+.sort-label {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .visual-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .post-card {
+    margin: 0 0.5rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .plb-sort-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .hero-cta-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-content {
+    padding: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+  }
+  
+  .card-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+}

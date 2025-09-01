@@ -1,0 +1,337 @@
+/*
+ * Single Post Layout - VR Experience Focused
+ * 個別投稿ページのVRメインレイアウト
+ */
+
+/* Single Post Section */
+.single-post-section {
+  background: linear-gradient(180deg, var(--mono-off-white) 0%, #f8f8f8 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.breadcrumb-nav {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.8);
+  border-radius: var(--radius-medium);
+  backdrop-filter: blur(10px);
+}
+
+/* Post Article Container */
+.single-post-article {
+  background: var(--mono-white);
+  border-radius: var(--radius-large);
+  box-shadow: 0 4px 30px var(--shadow-subtle);
+  overflow: hidden;
+  margin: 2rem 0;
+}
+
+/* Post Header */
+.post-header {
+  padding: 2rem;
+  border-bottom: 1px solid var(--mono-gray);
+  background: linear-gradient(135deg, var(--mono-white) 0%, #fafafa 100%);
+}
+
+.post-title-group {
+  margin-bottom: 1.5rem;
+}
+
+.post-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--mono-dark);
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.vr-experience-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, var(--accent-vr), #00cc00);
+  color: var(--mono-black);
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-large);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 4px 20px rgba(0,255,0,0.3);
+  animation: vrBadgePulse 3s infinite;
+}
+
+@keyframes vrBadgePulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,255,0,0.3); }
+  50% { box-shadow: 0 6px 30px rgba(0,255,0,0.5); }
+}
+
+.vr-badge-icon {
+  font-size: 1.3em;
+}
+
+.post-meta-bar {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  color: var(--mono-light);
+  font-size: 0.9rem;
+}
+
+.post-date,
+.post-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.meta-icon {
+  font-size: 1.1em;
+}
+
+/* Main Content Grid */
+.post-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0;
+  min-height: 70vh;
+}
+
+@media (max-width: 968px) {
+  .post-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* VR Viewer Container */
+.post-media-primary {
+  position: relative;
+  background: var(--mono-black);
+  display: flex;
+  flex-direction: column;
+}
+
+.post-media-primary.has-vr-content {
+  background: linear-gradient(135deg, #001a00 0%, #000d00 100%);
+}
+
+.vr-viewer-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vr-viewer-wrapper {
+  position: relative;
+  flex: 1;
+  min-height: 500px;
+  background: var(--mono-black);
+  overflow: hidden;
+}
+
+.vr-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  position: absolute;
+  inset: 0;
+}
+
+.vr-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(0,0,0,0.8);
+  color: var(--accent-vr);
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-medium);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.vr-overlay-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.vr-icon {
+  font-size: 1.2em;
+}
+
+/* VR Controls */
+.vr-controls {
+  padding: 1.5rem;
+  background: rgba(0,0,0,0.9);
+  border-top: 1px solid rgba(0,255,0,0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vr-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--accent-vr), #00aa00);
+  color: var(--mono-black);
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-medium);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  box-shadow: 0 3px 15px rgba(0,255,0,0.3);
+}
+
+.vr-fullscreen-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0,255,0,0.5);
+  background: linear-gradient(135deg, #00ff00, var(--accent-vr));
+}
+
+.btn-icon {
+  font-size: 1.1em;
+}
+
+.vr-instructions {
+  color: var(--mono-lighter);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* Image Container (fallback) */
+.post-image-container {
+  position: relative;
+  height: 100%;
+  min-height: 400px;
+}
+
+.post-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+  filter: grayscale(20%) contrast(1.1);
+}
+
+.post-image:hover {
+  transform: scale(1.02);
+  filter: grayscale(0%) contrast(1.2);
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.post-image-wrapper:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-overlay-content {
+  text-align: center;
+  color: var(--mono-white);
+}
+
+.image-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.image-text {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Info Panel */
+.post-info-panel {
+  background: var(--mono-white);
+  border-left: 1px solid var(--mono-gray);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 968px) {
+  .post-info-panel {
+    border-left: none;
+    border-top: 1px solid var(--mono-gray);
+  }
+}
+
+.panel-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .post-header {
+    padding: 1.5rem;
+  }
+  
+  .post-title {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+  
+  .post-meta-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .vr-controls {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .panel-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .single-post-section {
+    padding: 1rem 0;
+  }
+  
+  .post-header {
+    padding: 1rem;
+  }
+  
+  .vr-viewer-wrapper {
+    min-height: 300px;
+  }
+  
+  .vr-fullscreen-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

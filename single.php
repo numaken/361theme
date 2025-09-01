@@ -5,11 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 ?>
 
-<div class="uk-section uk-section-default">
+<div class="single-post-section">
   <div class="uk-container">
 
     <?php if ( function_exists('yoast_breadcrumb') ) {
-      yoast_breadcrumb( '<div class="uk-margin-bottom">','</div>' );
+      yoast_breadcrumb( '<nav class="breadcrumb-nav">','</nav>' );
     } ?>
 
     <?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
@@ -51,37 +51,96 @@ get_header();
       }
     ?>
 
-    <article id="post-<?php the_ID(); ?>" <?php post_class('uk-article'); ?>>
+    <article id="post-<?php the_ID(); ?>" <?php post_class('single-post-article'); ?>>
 
       <?php $has_vr = ! empty( $vr_url ); ?>
-      <div class="uk-grid-large" uk-grid>
-        <!-- 左カラム：メディア（VR優先、なければサムネ） -->
-        <div class="<?php echo $has_vr ? 'uk-width-2-3@m' : ( $thumb ? 'uk-width-1-3@m' : 'uk-width-1-1' ); ?>">
+      
+      <!-- Post Header -->
+      <header class="post-header">
+        <div class="post-title-group">
+          <h1 class="post-title"><?php echo esc_html( $title ); ?></h1>
           <?php if ( $has_vr ) : ?>
-            <div class="plb-vr-wrap" style="position:relative;width:100%;height:0;padding-bottom:56.25%;">
-              <iframe
-                src="<?php echo esc_url( $vr_url ); ?>"
-                style="position:absolute;inset:0;border:none;width:100%;height:100%;"
-                allowfullscreen uk-responsive uk-video="automute: true"
-                loading="lazy">
-              </iframe>
+            <div class="vr-experience-badge">
+              <span class="vr-badge-icon">🥽</span>
+              <span class="vr-badge-text">360° VR Experience</span>
             </div>
-            <div class="uk-margin-small-top">
-              <a class="uk-button uk-button-default uk-button-small" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">全画面で見る</a>
+          <?php endif; ?>
+        </div>
+        
+        <div class="post-meta-bar">
+          <time class="post-date" datetime="<?php echo esc_attr( get_the_date('c') ); ?>">
+            <span class="meta-icon">📅</span>
+            <?php echo esc_html( get_the_date() ); ?>
+          </time>
+          
+          <?php if ( $lat && $lng ) : ?>
+            <div class="post-location" data-lat="<?php echo esc_attr($lat); ?>" data-lng="<?php echo esc_attr($lng); ?>">
+              <span class="meta-icon">📍</span>
+              <span class="location-text">位置情報あり</span>
             </div>
+          <?php endif; ?>
+        </div>
+      </header>
+
+      <!-- Main Content Layout -->
+      <div class="post-content-grid">
+        
+        <!-- Primary Media Section -->
+        <div class="post-media-primary <?php echo $has_vr ? 'has-vr-content' : 'has-image-content'; ?>">
+          <?php if ( $has_vr ) : ?>
+            <div class="vr-viewer-container">
+              <div class="vr-viewer-wrapper">
+                <iframe
+                  src="<?php echo esc_url( $vr_url ); ?>"
+                  class="vr-iframe"
+                  allowfullscreen
+                  loading="lazy"
+                  title="<?php echo esc_attr($title); ?> VR Experience">
+                </iframe>
+                <div class="vr-overlay">
+                  <div class="vr-overlay-content">
+                    <span class="vr-icon">🥽</span>
+                    <span class="vr-text">VR体験中</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="vr-controls">
+                <a class="vr-fullscreen-btn" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">
+                  <span class="btn-icon">⛶</span>
+                  <span class="btn-text">全画面でVR体験</span>
+                </a>
+                <div class="vr-instructions">
+                  <span class="instruction-text">マウス・タッチで360度回転</span>
+                </div>
+              </div>
+            </div>
+            
           <?php elseif ( $thumb ) : ?>
-            <img src="<?php echo esc_url( $thumb ); ?>"
-                 alt="<?php echo esc_attr( $title ); ?>"
-                 loading="lazy"
-                 class="uk-border-rounded uk-width-1-1"
-                 onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
+            <div class="post-image-container">
+              <div class="post-image-wrapper">
+                <img src="<?php echo esc_url( $thumb ); ?>"
+                     alt="<?php echo esc_attr( $title ); ?>"
+                     loading="lazy"
+                     class="post-image"
+                     onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
+                <div class="image-overlay">
+                  <div class="image-overlay-content">
+                    <span class="image-icon">🏛️</span>
+                    <span class="image-text">写真で見る</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           <?php endif; ?>
         </div>
 
-        <!-- 右カラム：本文・メタ -->
-        <div class="<?php echo ( $has_vr || $thumb ) ? 'uk-width-expand@m' : 'uk-width-1-1'; ?>">
-          <h1 class="uk-article-title"><?php echo esc_html( $title ); ?></h1>
-          <p class="uk-article-meta"><?php echo esc_html( get_the_date() ); ?></p>
+        <!-- Content Information Panel -->
+        <div class="post-info-panel">
+          <div class="panel-content">
+            
+            <!-- Categories & Tags -->
+            <div class="post-taxonomy"><?php
 
           <!-- カテゴリ -->
           <div class="uk-margin-small-bottom">

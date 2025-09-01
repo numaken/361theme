@@ -1,0 +1,548 @@
+/*
+ * Visual-First Kyoto Theme Styles
+ * モノトーンベース、ビジュアル主体、塊感重視
+ */
+
+:root {
+  --mono-black: #0a0a0a;
+  --mono-dark: #1a1a1a;
+  --mono-medium: #2a2a2a;
+  --mono-light: #4a4a4a;
+  --mono-lighter: #6a6a6a;
+  --mono-white: #ffffff;
+  --mono-off-white: #fafafa;
+  --mono-gray: #e5e5e5;
+  --accent-vr: #00ff00;
+  --accent-location: #ff4444;
+  --shadow-subtle: rgba(0,0,0,0.05);
+  --shadow-medium: rgba(0,0,0,0.15);
+  --shadow-deep: rgba(0,0,0,0.3);
+  --radius-small: 4px;
+  --radius-medium: 12px;
+  --radius-large: 24px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Base */
+* { box-sizing: border-box; }
+body {
+  background: var(--mono-off-white);
+  color: var(--mono-dark);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Visual Hierarchy - 情報の塊感 */
+.content-cluster {
+  background: var(--mono-white);
+  border-radius: var(--radius-medium);
+  box-shadow: 0 2px 20px var(--shadow-subtle);
+  margin: 2rem 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.content-cluster:hover {
+  box-shadow: 0 8px 40px var(--shadow-medium);
+  transform: translateY(-4px);
+}
+
+/* Hero Section - 没入感とVR体験への誘導 */
+.plb-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--mono-dark) 0%, var(--mono-black) 100%);
+}
+
+.plb-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  filter: grayscale(80%) contrast(1.3) brightness(0.8);
+  transition: var(--transition);
+}
+
+.plb-hero:hover .plb-hero__bg {
+  opacity: 0.3;
+  filter: grayscale(60%) contrast(1.4) brightness(0.9);
+  transform: scale(1.02);
+}
+
+.plb-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,0.3) 50%),
+    radial-gradient(circle at 70% 60%, transparent 0%, rgba(0,0,0,0.4) 60%),
+    linear-gradient(180deg, transparent 0%, var(--mono-black) 100%);
+}
+
+.plb-hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--mono-white);
+  max-width: 900px;
+  padding: 2rem;
+}
+
+.plb-hero__title {
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 100;
+  letter-spacing: 0.4em;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: heroFadeIn 2s ease-out 0.5s forwards;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  position: relative;
+}
+
+.plb-hero__title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--mono-white), transparent);
+  opacity: 0;
+  animation: heroFadeIn 2s ease-out 1.5s forwards;
+}
+
+.plb-hero__subtitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  margin: 0 0 3rem;
+  opacity: 0;
+  animation: heroFadeIn 2s ease-out 1s forwards;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+
+/* Hero CTA Buttons */
+.hero-cta-group {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: heroFadeIn 2s ease-out 1.5s forwards;
+}
+
+.hero-cta-primary,
+.hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-large);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.hero-cta-primary {
+  background: linear-gradient(135deg, var(--accent-location), #ff6666);
+  color: var(--mono-white);
+  box-shadow: 0 4px 20px rgba(255,68,68,0.4);
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(255,68,68,0.6);
+  background: linear-gradient(135deg, #ff6666, var(--accent-location));
+}
+
+.hero-cta-secondary {
+  background: rgba(255,255,255,0.1);
+  color: var(--mono-white);
+  border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+}
+
+.hero-cta-secondary:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(255,255,255,0.1);
+}
+
+.cta-icon {
+  font-size: 1.2em;
+  display: inline-block;
+}
+
+.cta-text {
+  display: inline-block;
+}
+
+/* Hero Stats */
+.hero-stats {
+  opacity: 0;
+  animation: heroFadeIn 2s ease-out 2s forwards;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  color: var(--mono-lighter);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.stat-item strong {
+  color: var(--mono-white);
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+.plb-hero__scr {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--mono-white);
+  font-size: 2rem;
+  opacity: 0.7;
+  transition: var(--transition);
+  animation: bounce 2s infinite;
+}
+
+.plb-hero__scr:hover {
+  opacity: 1;
+  transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+  40% { transform: translateX(-50%) translateY(-10px); }
+  60% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Content Section - VR体験への視覚的誘導 */
+.content-section {
+  padding: 4rem 0;
+  background: linear-gradient(180deg, var(--mono-off-white) 0%, #f8f8f8 100%);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.section-title-group {
+  flex: 1;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--mono-dark);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--mono-light);
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* Content Grid - ビジュアル主体のカードレイアウト */
+.visual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+/* Enhanced Post Card */
+.post-card {
+  position: relative;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  background: var(--mono-white);
+  box-shadow: 0 2px 20px var(--shadow-subtle);
+  transition: var(--transition);
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.post-card.has-vr {
+  border: 2px solid rgba(0,255,0,0.2);
+  background: linear-gradient(145deg, var(--mono-white) 0%, #f0fff0 100%);
+}
+
+.post-card:hover {
+  transform: translateY(-12px) rotateX(2deg);
+  box-shadow: 0 25px 60px var(--shadow-medium);
+}
+
+.post-card.has-vr:hover {
+  box-shadow: 0 25px 60px rgba(0,255,0,0.1), 0 0 40px rgba(0,255,0,0.05);
+  border-color: rgba(0,255,0,0.4);
+}
+
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+/* Visual Indicators */
+.vr-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, var(--accent-vr), #00cc00);
+  color: var(--mono-black);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-large);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  z-index: 3;
+  box-shadow: 0 4px 15px rgba(0,255,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  animation: vrPulse 2s infinite;
+}
+
+@keyframes vrPulse {
+  0%, 100% { box-shadow: 0 4px 15px rgba(0,255,0,0.3); }
+  50% { box-shadow: 0 4px 25px rgba(0,255,0,0.6); }
+}
+
+.vr-icon {
+  font-size: 1.1em;
+}
+
+.location-indicator {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: linear-gradient(135deg, var(--accent-location), #ff6666);
+  color: var(--mono-white);
+  padding: 0.5rem;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  z-index: 3;
+  box-shadow: 0 3px 12px rgba(255,68,68,0.4);
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-icon {
+  font-size: 1em;
+}
+
+/* Card Media - VR優先の大きな表示 */
+.uk-card-media-top {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--mono-gray);
+}
+
+.uk-card-media-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+  filter: grayscale(30%) contrast(1.1);
+}
+
+.post-card:hover .uk-card-media-top img {
+  transform: scale(1.05);
+  filter: grayscale(0%) contrast(1.2);
+}
+
+/* Card Content - 情報の階層化 */
+.uk-card-body {
+  padding: 1.5rem;
+  position: relative;
+}
+
+.uk-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--mono-dark);
+  line-height: 1.3;
+}
+
+.card-desc-en {
+  color: var(--mono-lighter);
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
+.uk-text-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mono-gray);
+  font-size: 0.8rem;
+  color: var(--mono-light);
+}
+
+/* Category Badge - より目立つ配置 */
+.category-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--mono-black);
+  color: var(--mono-white);
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-small);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+/* Sort Toggle - 視覚的に分かりやすく */
+.plb-sort-toggle {
+  display: flex;
+  background: var(--mono-white);
+  border-radius: var(--radius-medium);
+  box-shadow: 0 2px 20px var(--shadow-subtle);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.plb-sort-toggle button {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: none;
+  background: transparent;
+  color: var(--mono-light);
+  font-weight: 600;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.plb-sort-toggle button.uk-button-primary,
+.plb-sort-toggle button.active {
+  background: var(--mono-dark);
+  color: var(--mono-white);
+}
+
+.plb-sort-toggle button:hover {
+  background: var(--mono-medium);
+  color: var(--mono-white);
+}
+
+/* Load More Button - より魅力的に */
+#load-more {
+  background: var(--mono-dark);
+  color: var(--mono-white);
+  border: none;
+  padding: 1.5rem 3rem;
+  border-radius: var(--radius-large);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 20px var(--shadow-medium);
+  margin: 3rem auto;
+  display: block;
+}
+
+#load-more:hover {
+  background: var(--mono-black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px var(--shadow-deep);
+}
+
+/* Skeleton Loaders - 読み込み中の体験向上 */
+.skeleton-card {
+  background: var(--mono-white);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  box-shadow: 0 2px 20px var(--shadow-subtle);
+}
+
+.skeleton-box,
+.skeleton-line {
+  background: linear-gradient(90deg, var(--mono-gray) 25%, #f0f0f0 50%, var(--mono-gray) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plb-hero__title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    letter-spacing: 0.3em;
+  }
+  
+  .visual-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+  
+  .post-card {
+    margin: 0 1rem;
+  }
+  
+  .plb-sort-toggle {
+    margin: 1rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mono-off-white: var(--mono-dark);
+    --mono-white: var(--mono-medium);
+    --mono-gray: var(--mono-light);
+  }
+  
+  body {
+    background: var(--mono-black);
+    color: var(--mono-white);
+  }
+}
