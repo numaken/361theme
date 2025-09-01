@@ -53,20 +53,33 @@ get_header();
 
     <article id="post-<?php the_ID(); ?>" <?php post_class('uk-article'); ?>>
 
+      <?php $has_vr = ! empty( $vr_url ); ?>
       <div class="uk-grid-large" uk-grid>
-        <!-- 左カラム：サムネイル -->
-        <?php if ( $thumb ) : ?>
-        <div class="uk-width-1-3@m">
-          <img src="<?php echo esc_url( $thumb ); ?>"
-               alt="<?php echo esc_attr( $title ); ?>"
-               loading="lazy"
-               class="uk-border-rounded uk-width-1-1"
-               onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
+        <!-- 左カラム：メディア（VR優先、なければサムネ） -->
+        <div class="<?php echo $has_vr ? 'uk-width-2-3@m' : ( $thumb ? 'uk-width-1-3@m' : 'uk-width-1-1' ); ?>">
+          <?php if ( $has_vr ) : ?>
+            <div class="plb-vr-wrap" style="position:relative;width:100%;height:0;padding-bottom:56.25%;">
+              <iframe
+                src="<?php echo esc_url( $vr_url ); ?>"
+                style="position:absolute;inset:0;border:none;width:100%;height:100%;"
+                allowfullscreen uk-responsive uk-video="automute: true"
+                loading="lazy">
+              </iframe>
+            </div>
+            <div class="uk-margin-small-top">
+              <a class="uk-button uk-button-default uk-button-small" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">全画面で見る</a>
+            </div>
+          <?php elseif ( $thumb ) : ?>
+            <img src="<?php echo esc_url( $thumb ); ?>"
+                 alt="<?php echo esc_attr( $title ); ?>"
+                 loading="lazy"
+                 class="uk-border-rounded uk-width-1-1"
+                 onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/noimage.png' ); ?>';">
+          <?php endif; ?>
         </div>
-        <?php endif; ?>
 
         <!-- 右カラム：本文・メタ -->
-        <div class="<?php echo $thumb ? 'uk-width-2-3@m' : 'uk-width-1-1'; ?>">
+        <div class="<?php echo ( $has_vr || $thumb ) ? 'uk-width-expand@m' : 'uk-width-1-1'; ?>">
           <h1 class="uk-article-title"><?php echo esc_html( $title ); ?></h1>
           <p class="uk-article-meta"><?php echo esc_html( get_the_date() ); ?></p>
 
@@ -160,17 +173,7 @@ get_header();
         <?php endif; ?>
       </ul>
 
-      <!-- VRビューア -->
-      <?php if ( $vr_url ) : ?>
-        <div class="uk-margin-large-top">
-          <iframe
-            src="<?php echo esc_url( $vr_url ); ?>"
-            style="border:none; width:100%; height:500px;"
-            allowfullscreen uk-responsive uk-video="automute: true"
-            loading="lazy">
-          </iframe>
-        </div>
-      <?php endif; ?>
+      <?php /* 下部のVRビューアは上部に統合したため削除 */ ?>
 
       <!-- Google Map -->
       <?php if ( $lat && $lng ) : ?>
