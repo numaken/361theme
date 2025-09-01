@@ -61,20 +61,6 @@
     </div>
   </div>
 
-  <!-- Breadcrumb Navigation (only on non-front pages) -->
-  <?php if ( ! is_front_page() ) : ?>
-    <div class="header-breadcrumb">
-      <div class="container uk-container">
-        <?php if ( function_exists('yoast_breadcrumb') ) {
-          yoast_breadcrumb( '<nav class="breadcrumb-nav" aria-label="Breadcrumb">','</nav>' );
-        } elseif ( function_exists('panolabo_breadcrumb') ) {
-          echo '<nav class="breadcrumb-nav" aria-label="Breadcrumb">';
-          panolabo_breadcrumb();
-          echo '</nav>';
-        } ?>
-      </div>
-    </div>
-  <?php endif; ?>
 
   <!-- Search Bar -->
   <div class="header-search" id="header-search" hidden>
@@ -100,5 +86,20 @@
     </div>
   </div>
 </div>
+
+<!-- Breadcrumb Navigation (only on non-front pages) -->
+<?php if ( ! is_front_page() ) : ?>
+  <div class="breadcrumb-section">
+    <div class="container uk-container">
+      <?php if ( function_exists('yoast_breadcrumb') ) {
+        yoast_breadcrumb( '<nav class="breadcrumb-nav" aria-label="Breadcrumb">','</nav>' );
+      } elseif ( function_exists('panolabo_breadcrumb') ) {
+        echo '<nav class="breadcrumb-nav" aria-label="Breadcrumb">';
+        panolabo_breadcrumb();
+        echo '</nav>';
+      } ?>
+    </div>
+  </div>
+<?php endif; ?>
 
 <main id="main-content" role="main"><?php

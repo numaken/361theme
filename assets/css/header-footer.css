@@ -25,13 +25,26 @@
 }
 
 .header-content {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
   padding: 1rem 0;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 60px;
+}
+
+.header-content .brand {
+  flex-shrink: 0;
+}
+
+.header-content .primary-nav {
+  flex: 1;
+  margin: 0 2rem;
+}
+
+.header-content .header-actions {
+  flex-shrink: 0;
 }
 
 /* Brand / Logo */
@@ -158,13 +171,13 @@
 }
 
 /* Breadcrumb Section */
-.header-breadcrumb {
+.breadcrumb-section {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-bottom: 1px solid var(--mono-gray);
   padding: 0.8rem 0;
 }
 
-.header-breadcrumb .breadcrumb-nav {
+.breadcrumb-section .breadcrumb-nav {
   margin: 0;
 }
 
@@ -271,11 +284,6 @@
   
   .hamburger {
     display: inline-block;
-  }
-  
-  .header-content {
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
   }
   
   .site-title {

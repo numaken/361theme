@@ -241,6 +241,7 @@
   position: relative;
   flex: 1;
   min-height: 500px;
+  aspect-ratio: 16/9;
   background: var(--mono-black);
   overflow: hidden;
 }
@@ -291,6 +292,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .vr-fullscreen-btn {
@@ -306,6 +309,11 @@
   font-size: 0.9rem;
   transition: var(--transition);
   box-shadow: 0 3px 15px rgba(0,255,0,0.3);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
 }
 
 .vr-fullscreen-btn:hover {
@@ -404,6 +412,13 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .vr-viewer-wrapper {
+    min-height: 400px;
+    aspect-ratio: 4/3;
+  }
+}
+
 @media (max-width: 768px) {
   .post-header {
     padding: 1.5rem;
@@ -428,6 +443,11 @@
   .panel-content {
     padding: 1.5rem;
   }
+  
+  .vr-viewer-wrapper {
+    min-height: 350px;
+    aspect-ratio: 16/10;
+  }
 }
 
 @media (max-width: 480px) {
@@ -441,10 +461,24 @@
   
   .vr-viewer-wrapper {
     min-height: 300px;
+    aspect-ratio: 16/10;
+  }
+  
+  .vr-controls {
+    padding: 1rem;
+    justify-content: center;
+    text-align: center;
   }
   
   .vr-fullscreen-btn {
     width: 100%;
     justify-content: center;
+    max-width: 280px;
+  }
+  
+  .vr-instructions {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
   }
 }
