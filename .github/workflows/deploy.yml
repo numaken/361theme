@@ -62,7 +62,7 @@ jobs:
           remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Deploy via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         if: ${{ env.FTP_SERVER != '' }}
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
