@@ -40,3 +40,19 @@ GitHub Theme URI: https://github.com/numaken/361theme
   transform: translateY(-5px);
   transition: all 0.2s ease;
 }
+
+/* Fade-in for newly loaded cards */
+.fade-in { animation: fadeIn 0.3s ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Skeleton loaders */
+.skeleton-box { height: 160px; background: #eee; border-radius: 6px; }
+.skeleton-line { height: 12px; background: #eee; border-radius: 6px; margin: 8px 0; }
+.skeleton-card { padding: 8px; border-radius: 6px; }
+
+/* Header shadow on scroll */
+.site-header { position: sticky; top: 0; z-index: 1000; }
+.site-header.is-scrolled { box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+
+/* Category badge on cards */
+.category-badge { position: absolute; z-index: 2; }

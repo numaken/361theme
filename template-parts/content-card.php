@@ -4,6 +4,13 @@
 <div>
   <a href="<?php the_permalink(); ?>"
      class="uk-card uk-card-default uk-card-hover uk-card-small">
+    <?php
+      $cats = get_the_category();
+      if ( ! empty( $cats ) ) {
+        $cat = $cats[0];
+        echo '<span class="category-badge uk-label uk-label-success uk-position-small uk-position-top-left">' . esc_html( $cat->name ) . '</span>';
+      }
+    ?>
     <?php if ( has_post_thumbnail() ) : ?>
       <div class="uk-card-media-top">
         <?php the_post_thumbnail( 'medium', [

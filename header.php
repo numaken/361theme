@@ -20,7 +20,7 @@
   <?php esc_html_e( 'コンテンツへスキップ', 'panolabo' ); ?>
 </a>
 
-<header class="uk-background-primary uk-light uk-padding-small">
+<header class="site-header uk-background-primary uk-light uk-padding-small">
   <div class="uk-container">
     <?php
       if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {

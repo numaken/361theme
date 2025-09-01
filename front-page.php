@@ -33,7 +33,8 @@ $query = new WP_Query( $args );
                   class="uk-button uk-button-primary"
                   data-page="1"
                   data-max="<?php echo esc_attr( $query->max_num_pages ); ?>">
-            Load More
+            <span class="btn-label">もっと見る</span>
+            <span class="btn-spinner" hidden uk-spinner></span>
           </button>
         </div>
       <?php endif; ?>
