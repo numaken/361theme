@@ -140,62 +140,37 @@ get_header();
           <div class="panel-content">
             
             <!-- Categories & Tags -->
-            <div class="post-taxonomy"><?php
+            <div class="post-taxonomy">
+              <!-- カテゴリ -->
+              <div class="category-list">
+                <?php
+                  $cats = get_the_category();
+                  foreach ( $cats as $cat ) {
+                    printf(
+                      '<span class="category-tag"><a href="%1$s">%2$s</a></span> ',
+                      esc_url( get_category_link( $cat ) ),
+                      esc_html( $cat->name )
+                    );
+                  }
+                ?>
+              </div>
 
-          <!-- カテゴリ -->
-          <div class="uk-margin-small-bottom">
-            <?php
-              $cats = get_the_category();
-              foreach ( $cats as $cat ) {
-                $color = get_term_meta( $cat->term_id, 'color', true ) ?: 'default';
-                printf(
-                  '<span class="uk-label uk-label-%1$s"><a href="%2$s" class="uk-link-reset">%3$s</a></span> ',
-                  esc_attr( $color ),
-                  esc_url( get_category_link( $cat ) ),
-                  esc_html( $cat->name )
-                );
-              }
-            ?>
-          </div>
-
-          <!-- タグ -->
-          <div class="uk-margin-small-bottom">
-            <?php
-              $tags = get_the_tags();
-              if ( $tags ) {
-                foreach ( $tags as $tag ) {
-                  printf(
-                    '<a href="%1$s" class="uk-button uk-button-text uk-margin-small-right">#%2$s</a>',
-                    esc_url( get_tag_link( $tag ) ),
-                    esc_html( $tag->name )
-                  );
-                }
-              }
-            ?>
-          </div>
-
-          <!-- カスタムタクソノミー -->
-          <div class="uk-margin-small-bottom">
-            <?php
-              $taxonomies = get_object_taxonomies( get_post_type(), 'objects' );
-              foreach ( $taxonomies as $tax ) {
-                if ( $tax->public && ! in_array( $tax->name, ['category','post_tag'], true ) ) {
-                  $terms = get_the_terms( get_the_ID(), $tax->name );
-                  if ( $terms && ! is_wp_error( $terms ) ) {
-                    echo '<div><strong>' . esc_html( $tax->labels->singular_name ) . ':</strong> ';
-                    foreach ( $terms as $term ) {
+              <!-- タグ -->
+              <div class="tag-list">
+                <?php
+                  $tags = get_the_tags();
+                  if ( $tags ) {
+                    foreach ( $tags as $tag ) {
                       printf(
-                        '<a href="%1$s" class="uk-button uk-button-small uk-button-default uk-margin-small-right">%2$s</a>',
-                        esc_url( get_term_link( $term ) ),
-                        esc_html( $term->name )
+                        '<a href="%1$s" class="tag-link">#%2$s</a>',
+                        esc_url( get_tag_link( $tag ) ),
+                        esc_html( $tag->name )
                       );
                     }
-                    echo '</div>';
                   }
-                }
-              }
-            ?>
-          </div>
+                ?>
+              </div>
+            </div>
 
           <!-- DBの本文（必要ならアンコメント） -->
           <div class="uk-margin">

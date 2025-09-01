@@ -621,14 +621,6 @@ function openai_enhance_description( $text ) {
     return $json['choices'][0]['message']['content'] ?? '';
 }
 
-
-
-if ( empty( $original ) ) {
-    error_log("[missing original_description] post_id={$post_id}, apicode={$apicode}");
-}
-
-
-
 //========================
 // 投稿保存時：original_description 取得＆本文加筆（1回限り）
 //========================
