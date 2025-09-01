@@ -3,6 +3,23 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 
+// Hero section (background from theme assets)
+?>
+<section class="plb-hero" aria-label="Hero">
+  <div class="plb-hero__bg" style="background-image:url('<?php echo esc_url( get_template_directory_uri().'/assets/images/hero.png' ); ?>');"></div>
+  <div class="plb-hero__overlay"></div>
+  <div class="plb-hero__content uk-container">
+    <h1 class="plb-hero__title">KYOTO</h1>
+    <p class="plb-hero__subtitle">Explore the beauty of Japan</p>
+    <div class="uk-margin-small-top">
+      <a href="#post-list" class="uk-button uk-button-primary">スポットを見る</a>
+      <button type="button" class="uk-button uk-button-default plb-jump-near">近い順で表示</button>
+    </div>
+  </div>
+  <a href="#main-list" class="plb-hero__scr" aria-label="下へ"><span uk-icon="icon: chevron-down; ratio:1.2"></span></a>
+</section>
+<?php
+
 // 初期ページ番号
 $page = 1;
 // 投稿を25件ずつ取得
@@ -14,7 +31,7 @@ $args = [
 $query = new WP_Query( $args );
 ?>
 
-<div class="uk-section uk-section-default">
+<div id="main-list" class="uk-section uk-section-default">
   <div class="uk-container">
 
     <div class="uk-flex uk-flex-between uk-margin-small-bottom" aria-label="並び順">

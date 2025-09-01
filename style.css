@@ -56,3 +56,16 @@ GitHub Theme URI: https://github.com/numaken/361theme
 
 /* Category badge on cards */
 .category-badge { position: absolute; z-index: 2; }
+
+/* Hero styles */
+.plb-hero{position:relative;min-height:48vh;display:flex;align-items:center}
+.plb-hero__bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.plb-hero__overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.55))}
+.plb-hero__content{position:relative;color:#fff;text-align:center}
+.plb-hero__title{font-size:clamp(40px,9vw,88px);letter-spacing:.06em;margin:0 0 .25em;font-weight:800}
+.plb-hero__subtitle{font-size:clamp(16px,2.6vw,28px);opacity:.95;margin:0}
+.plb-hero__scr{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);color:#fff;opacity:.85}
+@media (max-width:640px){.plb-hero{min-height:40vh}}
+
+/* Card image aspect */
+.uk-card-media-top img{aspect-ratio:16/9;object-fit:cover}

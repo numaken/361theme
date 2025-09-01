@@ -153,6 +153,20 @@
 
     // Button click
     $btn.on('click', function(e){ e.preventDefault(); doLoad($btn); });
+    // Jump to near (CTA in hero)
+    $(document).on('click','.plb-jump-near',function(e){
+      e.preventDefault();
+      localStorage.setItem('plb_sort','near');
+      mode='near'; updateToggle();
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(p){
+          window.__plb_geo=p; updateToggle();
+          document.getElementById('post-list')?.scrollIntoView({behavior:'smooth',block:'start'});
+        });
+      } else {
+        document.getElementById('post-list')?.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    });
     // Infinite scroll
     setupInfinite($btn);
     // Initial fade for first paint
