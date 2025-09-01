@@ -190,8 +190,12 @@ function panolabo_enqueue_assets() {
     ] );
     // AdSense publish/slot values for client-side grid insertion
     wp_localize_script( 'panolabo-theme', 'plbAds', [
-        'client'   => get_theme_mod('plb_adsense_client', ''),
-        'gridSlot' => get_theme_mod('plb_adsense_grid_slot', ''),
+        'client'      => get_theme_mod('plb_adsense_client', ''),
+        'gridSlot'    => get_theme_mod('plb_adsense_grid_slot', ''),
+        'fluidKey'    => get_theme_mod('plb_adsense_fluid_layout_key', ''),
+        'stickySlot'  => get_theme_mod('plb_adsense_sticky_slot', ''),
+        'stickyEnable'=> (bool) get_theme_mod('plb_adsense_sticky_enable', false),
+        'show'        => ! ( is_user_logged_in() && current_user_can('edit_posts') ),
     ] );
 }
 add_action( 'wp_enqueue_scripts', 'panolabo_enqueue_assets' );
@@ -874,6 +878,24 @@ add_action('customize_register', function($wp_customize){
     ]);
     $wp_customize->add_control('plb_adsense_inarticle_slot', [
         'section'=>'plb_adsense', 'label'=>'In-article Slot ID'
+    ]);
+    $wp_customize->add_setting('plb_adsense_fluid_layout_key', [
+        'type'=>'theme_mod', 'sanitize_callback'=>'sanitize_text_field'
+    ]);
+    $wp_customize->add_control('plb_adsense_fluid_layout_key', [
+        'section'=>'plb_adsense', 'label'=>'Fluid Layout Key (optional)'
+    ]);
+    $wp_customize->add_setting('plb_adsense_sticky_enable', [
+        'type'=>'theme_mod', 'sanitize_callback'=> function($v){ return (bool)$v; }, 'default'=>false
+    ]);
+    $wp_customize->add_control('plb_adsense_sticky_enable', [
+        'section'=>'plb_adsense', 'label'=>'モバイルのフッタースティッキーを有効化', 'type'=>'checkbox'
+    ]);
+    $wp_customize->add_setting('plb_adsense_sticky_slot', [
+        'type'=>'theme_mod', 'sanitize_callback'=>'sanitize_text_field'
+    ]);
+    $wp_customize->add_control('plb_adsense_sticky_slot', [
+        'section'=>'plb_adsense', 'label'=>'Sticky Slot ID（例: 9587331859）'
     ]);
 });
 

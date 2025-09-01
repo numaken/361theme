@@ -137,6 +137,33 @@
     });
   }
 
+  // Sticky footer ad (mobile only)
+  function mountStickyAd(){
+    if(!window.plbAds || !plbAds.show) return;
+    if(!plbAds.stickyEnable || !plbAds.client || !plbAds.stickySlot) return;
+    if(!window.matchMedia('(max-width: 767px)').matches) return;
+    if(localStorage.getItem('plb_sticky_closed')==='1') return;
+    if(typeof adsbygoogle === 'undefined') return;
+    if(document.getElementById('plb-sticky-ad')) return;
+    var el = document.createElement('div');
+    el.id = 'plb-sticky-ad';
+    el.className = 'plb-sticky-ad';
+    el.innerHTML = '<button class="plb-close" aria-label="close">閉じる</button>'+
+      '<ins class="adsbygoogle" style="display:block" data-ad-client="'+plbAds.client+'" data-ad-slot="'+plbAds.stickySlot+'" data-ad-format="auto" data-full-width-responsive="true"></ins>';
+    document.body.appendChild(el);
+    (adsbygoogle=window.adsbygoogle||[]).push({});
+    // add bottom padding to avoid overlap
+    setTimeout(function(){
+      var h = el.getBoundingClientRect().height || 70;
+      document.body.style.paddingBottom = h+'px';
+    }, 200);
+    el.querySelector('.plb-close').addEventListener('click', function(){
+      localStorage.setItem('plb_sticky_closed','1');
+      document.body.style.paddingBottom = '';
+      el.remove();
+    });
+  }
+
   $(function(){
     var $btn = $('#load-more');
     var $toggle = $('.plb-sort-toggle');
@@ -193,5 +220,7 @@
     updateToggle();
     // Header shadow
     headerShadow();
+    // Sticky ad
+    mountStickyAd();
   });
 })(jQuery);
