@@ -55,7 +55,9 @@ jobs:
 
       - name: Deploy via rsync over SSH
         uses: burnett01/rsync-deployments@6.0.0
-        if: ${{ secrets.DEPLOY_HOST }}
+        if: ${{ env.DEPLOY_HOST != '' }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         with:
           switches: -avz --delete
           path: dist/361theme/
@@ -66,7 +68,9 @@ jobs:
 
       - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        if: ${{ secrets.FTP_SERVER }}
+        if: ${{ env.FTP_SERVER != '' }}
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
