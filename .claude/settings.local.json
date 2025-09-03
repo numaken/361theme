@@ -103,7 +103,8 @@
       "Read(/Users/numaken/Development/wordpress/theme/panolabowp/**)",
       "Read(/Users/numaken/Development/wordpress/theme/panolabowp/**)",
       "Read(/Users/numaken/Development/wordpress/theme/**)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(gh:*)"
     ],
     "deny": [],
     "ask": []
