@@ -1153,68 +1153,10 @@ if ( ! function_exists('panolabo_haversine_km') ) {
 }
 
 //========================
-// [AFF] アフィリエイト・広告収益化機能
+// [ADS] 広告ウィジェット枠とUIkit統合
 //========================
 
-// === [AFF] 記事末：じゃらんCTA自動挿入（UIkitカード） ===
-add_filter('the_content', function($content){
-  if (!is_single() || !in_the_loop() || !is_main_query()) return $content;
-
-  // カテゴリ→リンク切替（差し替えやすいマップ）
-  $aff_map = [
-    'hotel'   => 'https://a8.example/jalan-hotel',   // 【差し替え】A8 じゃらん ホテル系
-    'temple'  => 'https://a8.example/jalan-kyoto',   // 【差し替え】
-    'gourmet' => 'https://a8.example/jalan-dinner',  // 【差し替え】
-    'default' => 'https://a8.example/jalan-generic', // 【差し替え】汎用
-  ];
-
-  $link = $aff_map['default'];
-  $cats = get_the_terms(get_the_ID(), 'category');
-  if ($cats && !is_wp_error($cats)) {
-    foreach ($cats as $c) {
-      if (isset($aff_map[$c->slug])) { $link = $aff_map[$c->slug]; break; }
-    }
-  }
-
-  $block = '
-  <div class="uk-card uk-card-default uk-card-body uk-margin">
-    <div class="uk-grid-small uk-flex-middle" uk-grid>
-      <div class="uk-width-expand">
-        <h3 class="uk-card-title uk-margin-remove">京都の宿を今すぐ予約</h3>
-        <p class="uk-margin-small">観光地に近い宿・お得プランをチェック。</p>
-      </div>
-      <div>
-        <a class="uk-button uk-button-primary"
-           href="'.esc_url($link).'"
-           target="_blank" rel="nofollow sponsored noopener"
-           data-aff="jalan" data-aff-pos="post_bottom">
-           じゃらんで宿泊プランを見る
-        </a>
-      </div>
-    </div>
-  </div>';
-
-  return $content . $block;
-});
-
-// === [AFF] ショートコード: [aff_jalan url="..." label="..." pos="sidebar"] ===
-add_shortcode('aff_jalan', function($atts){
-  $a = shortcode_atts([
-    'url'   => 'https://a8.example/jalan-generic', // 【差し替え】
-    'label' => 'じゃらんで宿を探す',
-    'pos'   => 'widget',
-  ], $atts);
-
-  return '<div class="uk-card uk-card-default uk-card-body uk-margin">
-    <a class="uk-button uk-button-primary uk-width-1-1"
-       href="'.esc_url($a['url']).'"
-       target="_blank" rel="nofollow sponsored noopener"
-       data-aff="jalan" data-aff-pos="'.esc_attr($a['pos']).'">'.
-       esc_html($a['label']).'</a>
-  </div>';
-});
-
-// === [ADS] ウィジェット枠登録 ===
+// === [ADS] ウィジェット枠登録（テーマ固有レイアウト） ===
 add_action('widgets_init', function(){
   register_sidebar([
     'name' => 'After Hero (広告/告知)',
@@ -1236,7 +1178,7 @@ add_action('widgets_init', function(){
   ]);
 });
 
-// === [PERF] LazyLoad + [ANALYTICS] クリック計測 ===
+// === [PERF] LazyLoad最適化 ===
 add_action('wp_footer', function(){
   ?>
   <script>
@@ -1258,34 +1200,39 @@ add_action('wp_footer', function(){
     }, {rootMargin: '200px 0px'});
     els.forEach(el=>io.observe(el));
   });
-
-  // GA4: affiliate_click イベント計測（data属性ベース）
-  document.addEventListener('click', function(e){
-    const a = e.target.closest('a[data-aff]');
-    if(!a || typeof gtag !== 'function') return;
-    try {
-      gtag('event', 'affiliate_click', {
-        partner: a.dataset.aff,
-        position: a.dataset.affPos || 'unknown',
-        page_path: location.pathname
-      });
-    } catch(e){}
-  });
   </script>
   <?php
 });
 
-// === [AFF] カテゴリ→パートナー/URLの解決関数（共通化） ===
-function plb_get_aff_link_for_post($post_id){
-  $map = [
-    'hotel'   => ['partner'=>'jalan', 'url'=>'https://a8.example/jalan-hotel'],
-    'activity'=> ['partner'=>'klook', 'url'=>'https://vc.example/klook-activity'],
-    'souvenir'=> ['partner'=>'rakuten', 'url'=>'https://a8.example/rakuten-kyoto'],
-    'default' => ['partner'=>'jalan', 'url'=>'https://a8.example/jalan-generic'],
-  ];
-  $cats = get_the_terms($post_id, 'category');
-  if ($cats && !is_wp_error($cats)) {
-    foreach ($cats as $c) if(isset($map[$c->slug])) return $map[$c->slug];
+// === [AMP] Affiliate Manager Pro プラグインとの統合 ===
+// Affiliate Manager Proプラグインのスタイルを361themeに統合
+add_action('wp_enqueue_scripts', function() {
+  if (class_exists('AffiliateManagerPro')) {
+    wp_add_inline_style('uikit', '
+      /* Affiliate Manager Pro + UIkit統合スタイル */
+      .amp-affiliate-block { margin: 20px 0; }
+      .amp-affiliate-card { 
+        @extend .uk-card, .uk-card-default, .uk-card-body;
+      }
+      .amp-affiliate-button { 
+        @extend .uk-button, .uk-button-primary;
+      }
+      .amp-placement-bottom .amp-affiliate-card {
+        @extend .uk-grid-small, .uk-flex-middle;
+      }
+    ');
   }
-  return $map['default'];
-}
+});
+
+//========================
+// [LEGACY] 旧アフィリエイト機能（Affiliate Manager Proに移行推奨）
+//========================
+/*
+MEMO: 以下の機能はAffiliate Manager Proプラグインに移行済み
+- 記事末CTA自動挿入 → プラグインのAI分析付き自動挿入
+- ショートコード → プラグインの[amp_link]ショートコード  
+- GA4イベント計測 → プラグインの高度分析機能
+- カテゴリ別リンク切替 → プラグインのインテリジェント選択
+
+移行後は以下をコメントアウト可能:
+*/
