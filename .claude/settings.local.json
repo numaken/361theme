@@ -98,7 +98,8 @@
       "Bash(git remote add:*)",
       "Bash(git pull:*)",
       "Bash(git reset:*)",
-      "WebFetch(domain:kyoto.361project.com)"
+      "WebFetch(domain:kyoto.361project.com)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
