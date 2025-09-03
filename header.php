@@ -4,6 +4,42 @@
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-adsense-account" content="ca-pub-8539502502589814">
+  
+  <!-- Google Analytics 4 -->
+  <?php 
+  $ga_id = get_theme_mod('ga4_measurement_id', '');
+  if ($ga_id) : ?>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr($ga_id); ?>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '<?php echo esc_js($ga_id); ?>', {
+        'anonymize_ip': true,
+        'custom_map': {'custom_parameter_1': 'vr_interaction'}
+      });
+      
+      // VR体験トラッキング
+      function trackVRInteraction(action, spot_name) {
+        gtag('event', 'vr_interaction', {
+          'event_category': 'VR Experience',
+          'event_label': spot_name,
+          'custom_parameter_1': action
+        });
+      }
+      
+      // CTAクリックトラッキング
+      function trackCTAClick(cta_type, button_text) {
+        gtag('event', 'cta_click', {
+          'event_category': 'CTA',
+          'event_label': button_text,
+          'custom_parameter_1': cta_type
+        });
+      }
+    </script>
+  <?php endif; ?>
+  
   <?php wp_head(); ?>
   <?php $plb_client = get_theme_mod('plb_adsense_client', 'ca-pub-8539502502589814');
     if ( $plb_client ) : ?>

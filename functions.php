@@ -99,6 +99,33 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 0);
 error_reporting(0);
 
+// Google Analytics 4 設定をカスタマイザーに追加
+add_action('customize_register', function($wp_customize) {
+    // Analytics セクション追加
+    $wp_customize->add_section('analytics_section', array(
+        'title' => 'Analytics 設定',
+        'priority' => 35,
+        'description' => 'Google Analytics 4 の設定を行います。',
+    ));
+    
+    // GA4 Measurement ID設定
+    $wp_customize->add_setting('ga4_measurement_id', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('ga4_measurement_id', array(
+        'label' => 'GA4 Measurement ID',
+        'description' => 'Google Analytics 4のMeasurement ID (例: G-XXXXXXXXXX)',
+        'section' => 'analytics_section',
+        'type' => 'text',
+        'input_attrs' => array(
+            'placeholder' => 'G-XXXXXXXXXX',
+        ),
+    ));
+});
+
 
 
 /**

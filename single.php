@@ -99,7 +99,8 @@ get_header();
             </div>
             
             <div class="vr-controls uk-flex uk-flex-center uk-flex-column uk-text-center">
-              <a class="vr-fullscreen-btn uk-button uk-button-primary" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener">
+              <a class="vr-fullscreen-btn uk-button uk-button-primary" href="<?php echo esc_url( $vr_url ); ?>" target="_blank" rel="noopener"
+                 onclick="if(typeof trackVRInteraction === 'function') trackVRInteraction('fullscreen_click', '<?php echo esc_js($title); ?>');">
                 <span class="btn-icon">⛶</span>
                 <span class="btn-text">全画面でVR体験</span>
               </a>
@@ -137,8 +138,10 @@ get_header();
               360°VR × アプリ × Web で "来る前から好きになる" を実装します。
             </div>
             <div class="uk-margin-left uk-flex-shrink-0">
-              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners">資料DL（無料）</a>
-              <a class="uk-button uk-button-default uk-margin-small-bottom" href="/cases">導入事例</a>
+              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners"
+                 onclick="if(typeof trackCTAClick === 'function') trackCTAClick('business_cta', '資料DL（無料）');">資料DL（無料）</a>
+              <a class="uk-button uk-button-default uk-margin-small-bottom" href="/cases"
+                 onclick="if(typeof trackCTAClick === 'function') trackCTAClick('business_cta', '導入事例');">導入事例</a>
             </div>
           </div>
         </div>
@@ -253,8 +256,10 @@ get_header();
               <p class="uk-margin-small">写真と基本情報を送るだけ。地図・特集・クーポン・予約導線までセットアップ。</p>
             </div>
             <div class="uk-flex-shrink-0">
-              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners">詳しく見る</a>
-              <a class="uk-button uk-button-default uk-margin-small-bottom" href="https://buy.stripe.com/xxxx">今すぐ申し込む</a>
+              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners"
+                 onclick="if(typeof trackCTAClick === 'function') trackCTAClick('partner_cta', '詳しく見る');">詳しく見る</a>
+              <a class="uk-button uk-button-default uk-margin-small-bottom" href="https://buy.stripe.com/xxxx"
+                 onclick="if(typeof trackCTAClick === 'function') trackCTAClick('partner_cta', '今すぐ申し込む');">今すぐ申し込む</a>
             </div>
           </div>
         </div>
