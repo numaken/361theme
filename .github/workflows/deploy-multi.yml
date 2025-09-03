@@ -1,0 +1,67 @@
+name: Deploy theme to multiple sites
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      sites:
+        description: 'Sites to deploy (comma-separated: kyoto,osaka,tokyo or "all")'
+        required: true
+        default: 'kyoto'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        site:
+          - name: kyoto
+            ftp_server_secret: FTP_SERVER_KYOTO
+            ftp_username_secret: FTP_USERNAME_KYOTO
+            ftp_password_secret: FTP_PASSWORD_KYOTO
+            remote_dir_secret: FTP_REMOTE_DIR_KYOTO
+            url: https://kyoto.361project.com
+          - name: osaka
+            ftp_server_secret: FTP_SERVER_OSAKA
+            ftp_username_secret: FTP_USERNAME_OSAKA
+            ftp_password_secret: FTP_PASSWORD_OSAKA
+            remote_dir_secret: FTP_REMOTE_DIR_OSAKA
+            url: https://osaka.361project.com
+          - name: tokyo
+            ftp_server_secret: FTP_SERVER_TOKYO
+            ftp_username_secret: FTP_USERNAME_TOKYO
+            ftp_password_secret: FTP_PASSWORD_TOKYO
+            remote_dir_secret: FTP_REMOTE_DIR_TOKYO
+            url: https://tokyo.361project.com
+    
+    # 手動実行時の条件分岐
+    if: ${{ github.event_name == 'push' || contains(github.event.inputs.sites, matrix.site.name) || github.event.inputs.sites == 'all' }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare artifact for ${{ matrix.site.name }}
+        run: |
+          mkdir -p dist
+          echo "Preparing theme for ${{ matrix.site.name }} site"
+          rsync -a --delete --exclude='.git' --exclude='dist' --exclude='.github' ./ ./dist/361theme/
+
+      - name: Deploy to ${{ matrix.site.name }} via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        if: ${{ secrets[matrix.site.ftp_server_secret] }}
+        env:
+          FTP_SERVER: ${{ secrets[matrix.site.ftp_server_secret] }}
+        with:
+          server: ${{ secrets[matrix.site.ftp_server_secret] }}
+          username: ${{ secrets[matrix.site.ftp_username_secret] }}
+          password: ${{ secrets[matrix.site.ftp_password_secret] }}
+          protocol: ftps
+          local-dir: dist/361theme/
+          server-dir: ${{ secrets[matrix.site.remote_dir_secret] }}
+
+      - name: Verify deployment for ${{ matrix.site.name }}
+        run: |
+          echo "✅ Theme deployed to ${{ matrix.site.url }}"
+          echo "🔗 Check: ${{ matrix.site.url }}/wp-content/themes/361theme/"

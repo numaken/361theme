@@ -1,0 +1,126 @@
+# BEGIN WordPress Security
+# ========================================
+# セキュリティ強化設定
+# ========================================
+
+# wp-config.php保護
+<Files wp-config.php>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# .htaccess自体の保護
+<Files ~ "^\.htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# 重要ファイルの保護
+<Files ~ "^(xmlrpc\.php|wp-config\.php|wp-config-sample\.php|readme\.html|license\.txt)">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# ディレクトリ一覧表示禁止
+Options -Indexes
+
+# サーバー情報隠蔽
+ServerSignature Off
+
+# PHPエラー非表示
+php_flag display_errors Off
+
+# wp-includes内のPHPファイル直接実行防止
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^wp-includes/(.*\.php)$ - [R=403,L]
+RewriteRule ^wp-includes/js/tinymce/langs/.+\.php - [R=403,L]
+</IfModule>
+
+# 不審なリクエストブロック
+<IfModule mod_rewrite.c>
+# ユーザー列挙防止
+RewriteCond %{QUERY_STRING} author=\d+
+RewriteRule .* - [R=403,L]
+
+# 悪意あるクエリブロック
+RewriteCond %{QUERY_STRING} (eval\(|base64_decode|gzinflate|file_get_contents|fwrite|fopen) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} ^.*(\[|\]|\(|\)|<|>|ê|"|;|\?|\*|=$).* [NC,OR]
+RewriteCond %{QUERY_STRING} ^.*("|'|<|>|\|{2}).* [NC,OR]
+RewriteCond %{QUERY_STRING} ^.*(%0|%A|%B|%C|%D|%E|%F|127\.0).* [NC,OR]
+RewriteCond %{QUERY_STRING} ^.*(globals|encode|localhost|loopback).* [NC,OR]
+RewriteCond %{QUERY_STRING} ^.*(request|select|insert|union|declare).* [NC]
+RewriteRule .* - [R=403,L]
+</IfModule>
+
+# セキュリティヘッダー
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options SAMEORIGIN
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# XMLRPCブロック
+<Files xmlrpc.php>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# WordPress管理画面へのアクセス制限（オプション）
+# 特定のIPからのみアクセス許可する場合は以下のコメントアウトを外してIPを設定
+# <Files wp-login.php>
+#     Order deny,allow
+#     Deny from all
+#     Allow from xxx.xxx.xxx.xxx
+# </Files>
+
+# 不正ファイルアップロード防止
+<FilesMatch "\.(php|php\.|php3|php4|php5|php7|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# uploads内のPHP実行防止
+<Directory "wp-content/uploads">
+    <FilesMatch "\.php$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</Directory>
+
+# ファイル拡張子による制限
+<FilesMatch "^(wp-config|\.htaccess|\.htpasswd)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ブルートフォース攻撃対策（レート制限）
+<IfModule mod_evasive24.c>
+    DOSHashTableSize 4096
+    DOSPageCount 3
+    DOSPageInterval 1
+    DOSSiteCount 50
+    DOSSiteInterval 1
+    DOSBlockingPeriod 600
+</IfModule>
+# END WordPress Security
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress

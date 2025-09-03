@@ -1,6 +1,88 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * ========================================
+ * セキュリティ設定
+ * ========================================
+ */
+
+// WordPressバージョン非表示
+remove_action('wp_head', 'wp_generator');
+add_filter('the_generator', '__return_empty_string');
+
+// WordPress REST API制限（管理者以外）
+add_filter('rest_authentication_errors', function($result) {
+    if (!empty($result)) return $result;
+    if (!is_user_logged_in()) {
+        return new WP_Error('rest_not_logged_in', 'REST APIにはログインが必要です。', array('status' => 401));
+    }
+    return $result;
+});
+
+// XML-RPC無効化
+add_filter('xmlrpc_enabled', '__return_false');
+
+// ファイル編集機能無効化
+if (!defined('DISALLOW_FILE_EDIT')) {
+    define('DISALLOW_FILE_EDIT', true);
+}
+
+// wp-includesファイルへの直接アクセス防止
+add_action('init', function() {
+    if (strpos($_SERVER['REQUEST_URI'], '/wp-includes/') !== false) {
+        wp_die('Forbidden', 'Forbidden', array('response' => 403));
+    }
+});
+
+// ログインエラーメッセージを曖昧に
+add_filter('login_errors', function() {
+    return 'ログイン情報が正しくありません。';
+});
+
+// セキュリティヘッダー設定
+add_action('send_headers', function() {
+    if (!is_admin()) {
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: SAMEORIGIN');
+        header('X-XSS-Protection: 1; mode=block');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    }
+});
+
+// wp-json エンドポイント情報削除
+remove_action('wp_head', 'rest_output_link_wp_head');
+remove_action('wp_head', 'wp_oembed_add_discovery_links');
+
+// RSD/wlwmanifest リンク削除
+remove_action('wp_head', 'rsd_link');
+remove_action('wp_head', 'wlwmanifest_link');
+
+// 絵文字スクリプト無効化
+remove_action('wp_head', 'print_emoji_detection_script', 7);
+remove_action('wp_print_styles', 'print_emoji_styles');
+
+// WordPress pingback無効化
+add_filter('wp_headers', function($headers) {
+    unset($headers['X-Pingback']);
+    return $headers;
+});
+
+// ユーザー列挙防止
+add_action('init', function() {
+    if (!is_admin() && isset($_REQUEST['author'])) {
+        wp_die('Forbidden', 'Forbidden', array('response' => 403));
+    }
+});
+
+// wp-config.php保護
+add_action('init', function() {
+    if (strpos($_SERVER['REQUEST_URI'], 'wp-config.php') !== false) {
+        wp_die('Forbidden', 'Forbidden', array('response' => 403));
+    }
+});
+
 
 
 /**
