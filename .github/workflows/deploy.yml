@@ -32,9 +32,9 @@ jobs:
       - name: Debug environment variables
         run: |
           echo "=== Environment Variable Check ==="
-          echo "DEPLOY_HOST exists: ${{ secrets.DEPLOY_HOST != '' }}"
-          echo "FTP_SERVER exists: ${{ secrets.FTP_SERVER != '' }}"
-          echo "FTP_USERNAME exists: ${{ secrets.FTP_USERNAME != '' }}"
+          echo "DEPLOY_HOST exists: ${{ !!secrets.DEPLOY_HOST }}"
+          echo "FTP_SERVER exists: ${{ !!secrets.FTP_SERVER }}"
+          echo "FTP_USERNAME exists: ${{ !!secrets.FTP_USERNAME }}"
           echo "FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}"
           
       - name: FTP debug (print PWD and list candidates)
@@ -55,7 +55,7 @@ jobs:
 
       - name: Deploy via rsync over SSH
         uses: burnett01/rsync-deployments@6.0.0
-        if: ${{ secrets.DEPLOY_HOST != '' }}
+        if: ${{ secrets.DEPLOY_HOST }}
         with:
           switches: -avz --delete
           path: dist/361theme/
@@ -66,7 +66,7 @@ jobs:
 
       - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        if: ${{ secrets.FTP_SERVER != '' }}
+        if: ${{ secrets.FTP_SERVER }}
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
