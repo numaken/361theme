@@ -188,10 +188,16 @@ get_header();
                 </div>
               </div>
 
+              <!-- In Content 広告枠 -->
+              <?php if (is_active_sidebar('ad_in_content')) dynamic_sidebar('ad_in_content'); ?>
+
               <!-- DBの本文（必要ならアンコメント） -->
               <div class="uk-margin">
                 <?php echo $content_html; ?>
               </div>
+
+              <!-- After Content 広告枠 -->
+              <?php if (is_active_sidebar('ad_after_content')) dynamic_sidebar('ad_after_content'); ?>
 
               <!-- 基本情報 -->
               <ul class="uk-list uk-list-divider uk-margin-top">

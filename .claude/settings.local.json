@@ -99,6 +99,12 @@
       "Bash(git pull:*)",
       "Bash(git reset:*)",
       "WebFetch(domain:kyoto.361project.com)",
+      "WebFetch(domain:361project.com)",
+      "Read(/Users/numaken/Development/wordpress/theme/panolabowp/**)",
+      "Read(/Users/numaken/Development/wordpress/theme/panolabowp/**)",
+      "Read(/Users/numaken/Development/wordpress/theme/**)",
+      "Bash(git checkout:*)",
+      "Bash(gh:*)",
       "Bash(git merge:*)"
     ],
     "deny": [],
