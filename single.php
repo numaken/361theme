@@ -244,6 +244,21 @@ get_header();
         
       </div>
 
+      <!-- Partner Recruitment CTA -->
+      <div class="uk-container uk-margin-large">
+        <div class="uk-card uk-card-default uk-card-body uk-margin">
+          <div class="uk-grid-small uk-flex-middle" uk-grid>
+            <div class="uk-width-expand">
+              <h3 class="uk-card-title uk-margin-remove">掲載パートナー募集中</h3>
+              <p class="uk-margin-small">写真と基本情報を送るだけ。地図・特集・クーポン・予約導線までセットアップ。</p>
+            </div>
+            <div class="uk-flex-shrink-0">
+              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners">詳しく見る</a>
+              <a class="uk-button uk-button-default uk-margin-small-bottom" href="https://buy.stripe.com/xxxx">今すぐ申し込む</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </article>
 
