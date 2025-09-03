@@ -128,6 +128,22 @@ get_header();
         <?php endif; ?>
       </div>
 
+      <!-- CTA for Business Owners -->
+      <div class="uk-container uk-margin-medium">
+        <div class="uk-alert-primary uk-box-shadow-small uk-margin" role="alert">
+          <div class="uk-flex uk-flex-middle uk-flex-wrap">
+            <div class="uk-width-expand">
+              <strong>この体験をあなたの施設でも</strong><br class="uk-visible@s">
+              360°VR × アプリ × Web で "来る前から好きになる" を実装します。
+            </div>
+            <div class="uk-margin-left uk-flex-shrink-0">
+              <a class="uk-button uk-button-primary uk-margin-small-right uk-margin-small-bottom" href="/for-owners">資料DL（無料）</a>
+              <a class="uk-button uk-button-default uk-margin-small-bottom" href="/cases">導入事例</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Content Grid Layout -->
       <div class="post-content-horizontal uk-grid-match" uk-grid>
         
