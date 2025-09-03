@@ -1210,15 +1210,68 @@ add_action('wp_enqueue_scripts', function() {
   if (class_exists('AffiliateManagerPro')) {
     wp_add_inline_style('uikit', '
       /* Affiliate Manager Pro + UIkit統合スタイル */
-      .amp-affiliate-block { margin: 20px 0; }
-      .amp-affiliate-card { 
-        @extend .uk-card, .uk-card-default, .uk-card-body;
+      .amp-affiliate-block { 
+        margin: 20px 0; 
       }
-      .amp-affiliate-button { 
-        @extend .uk-button, .uk-button-primary;
+      .amp-affiliate-card,
+      .amp-affiliate-block .amp-affiliate-card { 
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        border: 1px solid #e5e5e5;
+        border-radius: 5px;
+        padding: 30px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .amp-affiliate-button,
+      .amp-affiliate-block .amp-affiliate-button { 
+        background-color: #1e87f0;
+        color: #fff;
+        border: none;
+        padding: 0 30px;
+        line-height: 38px;
+        font-size: .875rem;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-block;
+        transition: background-color .1s ease-in-out;
+      }
+      .amp-affiliate-button:hover {
+        background-color: #0f7ae5;
+        color: #fff;
+        text-decoration: none;
       }
       .amp-placement-bottom .amp-affiliate-card {
-        @extend .uk-grid-small, .uk-flex-middle;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .amp-placement-bottom .amp-affiliate-content {
+        flex: 1;
+      }
+      .amp-affiliate-title {
+        font-size: 1.25rem;
+        font-weight: normal;
+        margin: 0 0 5px 0;
+      }
+      .amp-affiliate-text {
+        margin: 5px 0;
+        color: #666;
+      }
+      .amp-affiliate-provider {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 10px;
+        display: block;
+      }
+      .amp-affiliate-label {
+        font-size: 0.75rem;
+        background: #f8f8f8;
+        color: #666;
+        padding: 2px 8px;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        display: inline-block;
       }
     ');
   }
