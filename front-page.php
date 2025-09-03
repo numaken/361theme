@@ -32,6 +32,15 @@ get_header();
 </section>
 <?php
 
+// After Hero 広告枠
+if (is_active_sidebar('ad_after_hero')): ?>
+  <div class="uk-section uk-section-muted">
+    <div class="uk-container">
+      <?php dynamic_sidebar('ad_after_hero'); ?>
+    </div>
+  </div>
+<?php endif;
+
 // 初期ページ番号
 $page = 1;
 // 投稿を25件ずつ取得
