@@ -110,7 +110,7 @@ add_action('customize_register', function($wp_customize) {
     
     // GA4 Measurement ID設定
     $wp_customize->add_setting('ga4_measurement_id', array(
-        'default' => '',
+        'default' => 'G-2CXVKGKNSE',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
