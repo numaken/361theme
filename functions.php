@@ -395,7 +395,7 @@ add_action( 'widgets_init', 'panolabo_widgets_init' );
 
 
 // ─────────────────────────────
-// ① OGP＆Twitterカード用メタタグ
+// ① OGP＆Twitterカード用メタタグ + SEO統合
 // ─────────────────────────────
 function panolabo_meta_tags() {
     // If major SEO plugin is active, skip theme-level meta tags to avoid duplication
@@ -414,23 +414,40 @@ function panolabo_meta_tags() {
                : wp_trim_words( wp_strip_all_tags( $post->post_content ), 30 );
         $url   = get_permalink($post);
         $img   = get_the_post_thumbnail_url($post, 'full');
+        
+        $canonical_url = $url;
+        
     } else {
         $title = get_bloginfo('name');
         $desc  = get_bloginfo('description');
         $url   = home_url();
+        $canonical_url = $url;
         $img   = get_theme_mod('custom_logo')
                ? wp_get_attachment_image_url( get_theme_mod('custom_logo'), 'full' )
                : '';
     }
+    
     echo "\n";
+    // Canonical URL for SEO consolidation
+    echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+    
     echo '<meta property="og:title" content="'   . esc_attr($title) . "\" />\n";
     echo '<meta property="og:description" content="'. esc_attr($desc)  . "\" />\n";
-    echo '<meta property="og:url" content="'     . esc_url($url)     . "\" />\n";
+    echo '<meta property="og:url" content="'     . esc_url($canonical_url)     . "\" />\n";
     echo '<meta property="og:site_name" content="'. esc_attr(get_bloginfo('name')) . "\" />\n";
+    echo '<meta property="og:type" content="' . (is_singular() ? 'article' : 'website') . "\" />\n";
+    
     if ( $img ) {
         echo '<meta property="og:image" content="'. esc_url($img) . "\" />\n";
+        echo '<meta property="og:image:alt" content="' . esc_attr($title) . "\" />\n";
     }
+    
     echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+    echo '<meta name="twitter:title" content="' . esc_attr($title) . "\" />\n";
+    echo '<meta name="twitter:description" content="' . esc_attr($desc) . "\" />\n";
+    if ( $img ) {
+        echo '<meta name="twitter:image" content="' . esc_url($img) . "\" />\n";
+    }
 }
 add_action( 'wp_head', 'panolabo_meta_tags', 5 );
 
