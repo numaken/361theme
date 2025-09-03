@@ -293,13 +293,13 @@ function panolabo_enqueue_assets() {
         );
     }
 
-    // MailFormPro スタイル（HTTPS化）
-    wp_enqueue_style(
-        'mailform-style',
-        'https://eyesup.jp/inquiry/mfp.statics/mailformpro.css',
-        [],
-        null
-    );
+    // MailFormPro スタイル（外部リソースエラーのためコメントアウト）
+    // wp_enqueue_style(
+    //     'mailform-style',
+    //     'https://eyesup.jp/inquiry/mfp.statics/mailformpro.css',
+    //     [],
+    //     null
+    // );
 
     // テーマ共通JS（Load More等）
     wp_enqueue_script(
