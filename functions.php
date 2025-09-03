@@ -83,6 +83,22 @@ add_action('init', function() {
     }
 });
 
+// デバッグログ無効化
+if (!defined('WP_DEBUG')) {
+    define('WP_DEBUG', false);
+}
+if (!defined('WP_DEBUG_LOG')) {
+    define('WP_DEBUG_LOG', false);
+}
+if (!defined('WP_DEBUG_DISPLAY')) {
+    define('WP_DEBUG_DISPLAY', false);
+}
+
+// PHPエラー表示無効化
+ini_set('display_errors', 0);
+ini_set('log_errors', 0);
+error_reporting(0);
+
 
 
 /**
@@ -103,13 +119,13 @@ function panolabo_fetch_contents_list() {
     ] );
 
     if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
-        error_log( 'panolabo_fetch_contents_list: リスト取得失敗 - ' . print_r( $response, true ) );
+        // error_log( 'panolabo_fetch_contents_list: リスト取得失敗 - ' . print_r( $response, true ) );
         return false;
     }
 
     $data = json_decode( wp_remote_retrieve_body( $response ), true );
     if ( ! is_array( $data ) ) {
-        error_log( 'panolabo_fetch_contents_list: JSON 形式異常' );
+        // error_log( 'panolabo_fetch_contents_list: JSON 形式異常' );
         return false;
     }
 
@@ -585,7 +601,7 @@ function panolabo_call_openai_editor( $text ) {
 function openai_enhance_article( $text ) {
     $api_key = getenv('OPENAI_API_KEY'); // ← wp-config.php の環境変数から取得
     if ( ! $api_key ) {
-        error_log('[OpenAI] APIキーが取得できませんでした');
+        // error_log('[OpenAI] APIキーが取得できませんでした');
         return '';
     }
 
@@ -660,7 +676,7 @@ function panolabo_generate_and_save_post( $api_url ) {
 function openai_enhance_description( $text ) {
     $api_key = getenv( 'OPENAI_API_KEY' );
     if ( ! $api_key ) {
-        error_log('[OpenAI] APIキーが取得できませんでした');
+        // error_log('[OpenAI] APIキーが取得できませんでした');
         return '';
     }
 
@@ -695,7 +711,7 @@ function openai_enhance_description( $text ) {
     ] );
 
     if ( is_wp_error( $response ) ) {
-        error_log('[OpenAI] リクエストエラー: ' . $response->get_error_message());
+        // error_log('[OpenAI] リクエストエラー: ' . $response->get_error_message());
         return '';
     }
 
@@ -728,7 +744,7 @@ function panolabo_add_content_from_description_once($post_id) {
     }
 
     if ( empty($original) ) {
-        error_log("[missing original_description] post_id={$post_id}, apicode={$apicode}");
+        // error_log("[missing original_description] post_id={$post_id}, apicode={$apicode}");
         return;
     }
 
@@ -765,7 +781,7 @@ function panolabo_batch_fetch_descriptions() {
         $apicode_raw = get_field( 'apicode', $post_id );
 
         if ( empty( $apicode_raw ) ) {
-            error_log( "[skipped] apicode is empty for post_id={$post_id}" );
+            // error_log( "[skipped] apicode is empty for post_id={$post_id}" );
             continue;
         }
 
@@ -780,9 +796,9 @@ function panolabo_batch_fetch_descriptions() {
 
         if ( is_array( $data ) && ! empty( $data['description'] ) ) {
             update_post_meta( $post_id, 'original_description', wp_strip_all_tags( $data['description'] ) );
-            error_log( "[description saved] post_id={$post_id}, apicode={$apicode}" );
+            // error_log( "[description saved] post_id={$post_id}, apicode={$apicode}" );
         } else {
-            error_log( "[invalid response] post_id={$post_id}, apicode={$apicode}" );
+            // error_log( "[invalid response] post_id={$post_id}, apicode={$apicode}" );
         }
     }
 }
@@ -864,12 +880,12 @@ function panolabo_batch_enhance_descriptions() {
         if ( ! $original ) {
             $apicode = get_post_meta( $post_id, 'apicode', true );
             if ( ! $apicode ) {
-                error_log( "[skipped] apicode missing for post_id={$post_id}" );
+                // error_log( "[skipped] apicode missing for post_id={$post_id}" );
                 continue;
             }
             $data = panolabo_fetch_api_data( $apicode );
             if ( empty( $data['description'] ) ) {
-                error_log( "[skipped] description missing for post_id={$post_id}" );
+                // error_log( "[skipped] description missing for post_id={$post_id}" );
                 continue;
             }
             $original = wp_strip_all_tags( $data['description'] );
@@ -879,7 +895,7 @@ function panolabo_batch_enhance_descriptions() {
         // OpenAI で加筆
         $enhanced = openai_enhance_description( $original );
         if ( ! $enhanced ) {
-            error_log( "[error] OpenAI enhancement failed for post_id={$post_id}" );
+            // error_log( "[error] OpenAI enhancement failed for post_id={$post_id}" );
             continue;
         }
 
@@ -894,7 +910,7 @@ function panolabo_batch_enhance_descriptions() {
         ] );
         add_action( 'save_post', 'panolabo_cache_api_data' );
 
-        error_log( "[enhanced] post_id={$post_id}" );
+        // error_log( "[enhanced] post_id={$post_id}" );
 
         // サーバープレッシャー軽減のため少し待つ（必要に応じて）
         sleep(1);
