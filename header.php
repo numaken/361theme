@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-adsense-account" content="ca-pub-8539502502589814">
   
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PNMT8QWB');</script>
+  <!-- End Google Tag Manager -->
+  
   <!-- Google Analytics 4 -->
   <?php 
   $ga_id = get_theme_mod('ga4_measurement_id', '');
@@ -48,6 +56,10 @@
   <style>:root { --accent: #1E7C6E; --header-bg:#fff; }</style>
 </head>
 <body <?php body_class(); ?>>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNMT8QWB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <?php if ( function_exists('wp_body_open') ) { wp_body_open(); } ?>
 <a href="#main-content" class="uk-skip-link uk-position-fixed uk-position-top-left uk-padding-small"><?php esc_html_e('コンテンツへスキップ','panolabo'); ?></a>
 

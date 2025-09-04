@@ -105,7 +105,14 @@
       "Read(/Users/numaken/Development/wordpress/theme/**)",
       "Bash(git checkout:*)",
       "Bash(gh:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Read(/Users/numaken/Development/wordpress/plugin/**)",
+      "Read(/Users/numaken/Development/wordpress/plugin/affiliate-manager-pro/**)",
+      "Bash(chmod:*)",
+      "Bash(./deploy.sh)",
+      "Bash(zip:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
