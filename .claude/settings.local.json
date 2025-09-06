@@ -112,7 +112,8 @@
       "Bash(./deploy.sh)",
       "Bash(zip:*)",
       "WebFetch(domain:api.github.com)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(gh auth:*)"
     ],
     "deny": [],
     "ask": []
