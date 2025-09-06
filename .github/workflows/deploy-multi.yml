@@ -35,33 +35,44 @@ jobs:
             remote_dir_secret: FTP_REMOTE_DIR_TOKYO
             url: https://tokyo.361project.com
     
-    # 手動実行時の条件分岐
-    if: ${{ github.event_name == 'push' || contains(github.event.inputs.sites, matrix.site.name) || github.event.inputs.sites == 'all' }}
-    
     steps:
+      - name: Check if site should be deployed
+        id: check
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.inputs.sites }}" == "all" ]]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.inputs.sites }}" == *"${{ matrix.site.name }}"* ]]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          fi
+          
       - name: Checkout
+        if: steps.check.outputs.should_deploy == 'true'
         uses: actions/checkout@v4
 
       - name: Prepare artifact for ${{ matrix.site.name }}
+        if: steps.check.outputs.should_deploy == 'true'
         run: |
           mkdir -p dist
           echo "Preparing theme for ${{ matrix.site.name }} site"
           rsync -a --delete --exclude='.git' --exclude='dist' --exclude='.github' ./ ./dist/361theme/
 
       - name: Deploy to ${{ matrix.site.name }} via FTPS
+        if: steps.check.outputs.should_deploy == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        if: ${{ secrets[matrix.site.ftp_server_secret] }}
-        env:
-          FTP_SERVER: ${{ secrets[matrix.site.ftp_server_secret] }}
         with:
-          server: ${{ secrets[matrix.site.ftp_server_secret] }}
-          username: ${{ secrets[matrix.site.ftp_username_secret] }}
-          password: ${{ secrets[matrix.site.ftp_password_secret] }}
+          server: ${{ secrets[format('{0}', matrix.site.ftp_server_secret)] }}
+          username: ${{ secrets[format('{0}', matrix.site.ftp_username_secret)] }}
+          password: ${{ secrets[format('{0}', matrix.site.ftp_password_secret)] }}
           protocol: ftps
           local-dir: dist/361theme/
-          server-dir: ${{ secrets[matrix.site.remote_dir_secret] }}
+          server-dir: ${{ secrets[format('{0}', matrix.site.remote_dir_secret)] }}
 
       - name: Verify deployment for ${{ matrix.site.name }}
+        if: steps.check.outputs.should_deploy == 'true'
         run: |
           echo "✅ Theme deployed to ${{ matrix.site.url }}"
           echo "🔗 Check: ${{ matrix.site.url }}/wp-content/themes/361theme/"
